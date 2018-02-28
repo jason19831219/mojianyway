@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul class="shots"></ul>
+
+</body>
+
+<script src="./javascripts/jquery.min.js"></script>
+<script src="./javascripts/jribbble.min.js"></script>
+
+
+<script type="text/javascript">
+
+
+    $(function () {
+        $.jribbble.setToken('45d01505d03475b2ba6db5408854b323826608a94f6c19f4ea9b10a7fd79735d');
+
+        $.jribbble.shots('debuts', {
+            'per_page': 36,
+            'timeframe': 'month',
+            'sort': 'views'
+        }).then(function(res) {
+            var html = [];
+            res.forEach(function(shot) {
+                html.push('<li class="shots--shot">');
+                html.push('<a href="' + shot.html_url + '" target="_blank">');
+                html.push('<img src="' + shot.images.normal + '">');
+                html.push('</a></li>');
+            });
+
+            $('.shots').html(html.join(''));
+        });
+    })
+
+</script>
+
+</html>
