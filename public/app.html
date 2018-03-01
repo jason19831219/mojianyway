@@ -5,36 +5,116 @@
     <title>Title</title>
 </head>
 <body>
-<ul class="shots"></ul>
+
 
 </body>
 
+<script src="./javascripts/wx.min.js"></script>
 <script src="./javascripts/jquery.min.js"></script>
-<script src="./javascripts/jribbble.min.js"></script>
 
 
 <script type="text/javascript">
 
 
-    $(function () {
-        $.jribbble.setToken('45d01505d03475b2ba6db5408854b323826608a94f6c19f4ea9b10a7fd79735d');
 
-        $.jribbble.shots('debuts', {
-            'per_page': 36,
-            'timeframe': 'month',
-            'sort': 'views'
-        }).then(function(res) {
-            var html = [];
-            res.forEach(function(shot) {
-                html.push('<li class="shots--shot">');
-                html.push('<a href="' + shot.html_url + '" target="_blank">');
-                html.push('<img src="' + shot.images.normal + '">');
-                html.push('</a></li>');
-            });
 
-            $('.shots').html(html.join(''));
+    $(function(){
+        var url=window.location.href.split('#')[0];
+        url = url.replace(/&/g, '%26');
+        alert("url:"+url);
+        $.ajax({
+            url: "/api/wxjssdk/getJssdk",
+            type: "GET",
+            async:true,
+            cache: false,
+            dataType: "json",
+            success: function(data){
+                alert(JSON.stringify(data));
+                wx.config({
+                    debug: false,
+                    appId: data.appId,
+                    timestamp:data.timeStamp,
+                    nonceStr:data.nonceStr,
+                    signature:data.signature,
+                    jsApiList: [
+                        'onMenuShareTimeline',
+                        'onMenuShareAppMessage'
+                    ]
+                });
+
+                wx.ready(function(){
+                    //wx.hideOptionMenu();/***隐藏分享菜单****/
+                    wx.checkJsApi({
+                        jsApiList: [
+                            'onMenuShareTimeline',
+                            'onMenuShareAppMessage'
+                        ],
+                        success: function (res) {
+                            //alert(res.errMsg);
+                        }
+                    });
+
+                    wx.onMenuShareAppMessage({
+                        title: 'anyway application one',
+                        desc: 'anyway application one',
+                        link: '',
+                        imgUrl: '',
+                        trigger: function (res) {
+                            //alert('用户点击发送给朋友');
+                        },
+                        success: function (res) {
+
+
+                        },
+                        cancel: function (res) {
+                            //alert('已取消');
+                        },
+                        fail: function (res) {
+                            alert(res.errMsg);
+                        }
+                    });
+
+                    // 2.2 监听“分享到朋友圈”按钮点击、自定义分享内容及分享结果接口
+                    wx.onMenuShareTimeline({
+                        title: 'anyway application one',
+                        desc: 'anyway application one',
+                        link: '',
+                        imgUrl: '<%=basePath%>/resources/qjc/img/start.png',
+                        trigger: function (res) {
+                            //alert('用户点击分享到朋友圈');
+                        },
+                        success: function (res) {
+
+                            $.ajax({
+                                url: "",
+                                type: "POST",
+                                async:true,
+                                cache: false,
+                                dataType: "json",
+                                success: function(data){
+
+                                }
+                            });
+                        },
+                        cancel: function (res) {
+                            //alert('已取消');
+                        },
+                        fail: function (res) {
+                            alert(res.errMsg);
+                        }
+                    });
+
+                    wx.error(function (res) {
+                        alert(res.errMsg);
+                    });
+                });
+            },
+            error: function() {
+                alert('ajax request failed!!!!');
+                return;
+            }
         });
-    })
+    });
 
 </script>
 

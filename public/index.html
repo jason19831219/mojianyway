@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+</body>
+
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="./javascripts/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+
+
+
+
+    $(function(){
+        if(wx){
+
+            var data = {
+                    url: location.href.split('#')[0] // 将当前URL地址上传至服务器用于产生数字签名
+                };
+
+            $.ajax({
+                url: "/api/wxjssdk/getjssdk",
+                type: 'post',
+                data: data,
+                async:true,
+                cache: false,
+                dataType: "json",
+                success: function(info){
+
+                    var data = info.data;
+                    wx.config({
+                        debug: false,
+                        appId: data.appId,
+                        timestamp:data.timestamp,
+                        nonceStr:data.nonceStr,
+                        signature:data.signature,
+                        jsApiList: [
+                            'onMenuShareTimeline',
+                            'onMenuShareAppMessage'
+                        ]
+                    });
+
+                    wx.ready(function(){
+                        //wx.hideOptionMenu();/***隐藏分享菜单****/
+                        wx.checkJsApi({
+                            jsApiList: [
+                                'onMenuShareTimeline',
+                                'onMenuShareAppMessage'
+                            ],
+                            success: function (res) {
+                                //alert(res.errMsg);
+                            }
+                        });
+
+                        wx.onMenuShareAppMessage({
+                            title: 'anyway application one',
+                            desc: 'anyway application one',
+                            link: '',
+                            imgUrl: 'http://moji.anyway.red/images/hot.png',
+                            trigger: function (res) {
+                                //alert('用户点击发送给朋友');
+                            },
+                            success: function (res) {
+
+
+                            },
+                            cancel: function (res) {
+                                //alert('已取消');
+                            },
+                            fail: function (res) {
+                                alert(res.errMsg);
+                            }
+                        });
+
+                        // 2.2 监听“分享到朋友圈”按钮点击、自定义分享内容及分享结果接口
+                        wx.onMenuShareTimeline({
+                            title: 'anyway application one',
+                            desc: 'anyway application one',
+                            link: '',
+                            imgUrl: 'http://moji.anyway.red/images/hot.png',
+                            trigger: function (res) {
+                                //alert('用户点击分享到朋友圈');
+                            },
+                            success: function (res) {
+
+                                $.ajax({
+                                    url: "",
+                                    type: "POST",
+                                    async:true,
+                                    cache: false,
+                                    dataType: "json",
+                                    success: function(data){
+
+                                    }
+                                });
+                            },
+                            cancel: function (res) {
+                                //alert('已取消');
+                            },
+                            fail: function (res) {
+                                alert(res.errMsg);
+                            }
+                        });
+
+                        wx.error(function (res) {
+                            alert(res.errMsg);
+                        });
+                    });
+                },
+                error: function() {
+                    alert('ajax request failed!!!!');
+                    return;
+                }
+            });
+        }
+
+    });
+
+</script>
+
+</html>

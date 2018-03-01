@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@alicloud/sms-sdk": "^1.0.7",
+    "async": "^2.6.0",
     "body-parser": "~1.18.2",
     "cheerio": "^1.0.0-rc.2",
     "cookie-parser": "~1.4.3",
@@ -17,8 +18,10 @@
     "express-session": "^1.15.6",
     "http-logger": "^1.0.1",
     "mongoose": "^5.0.2",
+    "node-cache": "^4.1.1",
     "request": "^2.83.0",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "sha1": "^1.1.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

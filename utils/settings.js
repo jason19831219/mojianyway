@@ -4,7 +4,7 @@ module.exports = {
     session_secret: 'doracms', // 务必修改
     auth_cookie_name: 'doracms',
     cache_maxAge: Math.floor(Date.now() / 1000) + 24 * 60 * 60, //1 hours
-    serverPort: 8080,
+    serverPort: 80,
 
     // 密码盐
     encrypt_key: 'dora',
@@ -68,8 +68,12 @@ module.exports = {
     system_atLeast_one: '请选择至少一项后再执行删除操作！',
     system_batch_delete_not_allowed: '对不起，该模块不允许批量删除！',
     system_error_imageType: '文件格式不正确，请重新上传',
-    system_error_upload: '上传失败，请稍后重试'
+    system_error_upload: '上传失败，请稍后重试',
 
+
+    wx_appID : 'wx3b8d0ac92b18f294',
+    wx_appSecret : 'a63f8e1aac17addc0ce66a04a5231cf8',
+    wx_token :'kkkdiwowqppdfqoeofojweio'
 
 
 };
