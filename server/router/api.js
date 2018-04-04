@@ -1,14 +1,35 @@
 const express = require("express");
 const request = require('request');
-const api = express.Router();
+const router = express.Router();
 const setting = require('../../utils/settings');
 const sha1 = require('sha1');
 const waterfall = require('async/waterfall')
 const NodeCache = require('node-cache')
 const cache = new NodeCache({stdTTL: 3600, checkperiod: 3600})
+const _ = require("lodash");
+
+const { AdminUser,  User, Article } = require("../controller");
+
+Article.getArticlesBG();
+
+function checkUserSession(req, res, next) {
+  if (!_.isEmpty(req.session.userInfo)) {
+    next();
+  } else {
+    res.redirect("/");
+  }
+}
+
+router.get("/users/session", (req, res) => {
+  res.send({
+    state: "success",
+    userInfo: req.session.userInfo,
+    signed: req.session.signed
+  });
+});
 
 
-api.get("/wxjssdk", (req, res, next) => {
+router.get("/wxjssdk", (req, res, next) => {
 
     let wx = req.query;
     console.log(JSON.stringify(wx));
@@ -33,7 +54,7 @@ api.get("/wxjssdk", (req, res, next) => {
 });
 
 
-api.post('/wxjssdk/getjssdk', (req, res) => {
+router.post('/wxjssdk/getjssdk', (req, res) => {
 
 
 
@@ -174,4 +195,22 @@ api.post('/wxjssdk/getjssdk', (req, res) => {
 });
 
 
-module.exports = api;
+
+// 用户登录
+// router.post("/users/doLogin", User.loginAction);
+
+// 用户注册
+
+
+
+
+// router.post("/users/doReg", User.regAction);
+router.get("/users",User.getUsers);
+
+router.post("/users/getSmsCode",User.getSmsCode);
+router.post("/users/doReg",User.doReg);
+
+
+router.get("/article/getList", Article.getArticles);
+
+module.exports = router;

@@ -1,0 +1,847 @@
+@import "./scaffold";
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+}
+
+a {
+  background: transparent;
+  text-decoration: none;
+  color: #ffffff;
+  &:active,
+  &:hover{
+    outline: 0;
+  }
+}
+
+textarea {
+  overflow: auto;
+  vertical-align: top; /* 2 */
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.untouchcallout {
+  -webkit-touch-callout: none
+}
+
+.unselectable {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+td {
+  vertical-align: top;
+}
+p{
+  line-height: 1em;
+}
+ul, ol, li {
+  list-style: none
+}
+
+
+
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: "\00A0";
+  clear: both;
+  height: 0
+}
+
+.clearit {
+  clear: both;
+  height: 0;
+  font-size: 0;
+  overflow: hidden;
+}
+
+
+html {
+  font-family: Arial,Verdana,Sans-serif;
+  -ms-text-size-adjust: none; /* 2 */
+  -webkit-text-size-adjust: none; /* 2 */
+  overflow-x: hidden;
+  overflow-y: scroll; /* 3 */
+  background-color: #ffffff;
+  height:100%;
+}
+
+body {
+  position: relative;
+  font-size: 12px;
+  width: 100%;
+  min-height: 100%;
+  background-color: #ebebeb;
+  overflow-x: hidden;
+  vertical-align: middle;
+  font-weight: normal;
+  font-style: normal;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent; /* For some Androids */
+}
+
+.view-holder {
+  min-height: 10rem;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: #ebebeb;
+}
+
+.header-holder {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+}
+
+section {
+  min-height: 10rem;
+  width: 100%;
+  position: relative;
+  background-color: #ebebeb;
+  overflow: hidden;
+}
+
+
+.wrapper{
+  position: relative;
+  overflow: hidden;
+  .boxsizing();
+}
+
+//@font-face {
+//  font-family: 'SourceHanSansSC-ExtraLight';
+//  src: url('../font/SourceHanSansSC-ExtraLight.eot');
+//  src: url('../font/SourceHanSansSC-ExtraLight.eot?#font-spider') format('embedded-opentype'),
+//  url('../font/SourceHanSansSC-ExtraLight.woff') format('woff'),
+//  url('../font/SourceHanSansSC-ExtraLight.ttf') format('truetype'),
+//  url('../font/SourceHanSansSC-ExtraLight.svg') format('svg');
+//  font-weight: normal;
+//  font-style: normal;
+//}
+//
+//@font-face {
+//  font-family: 'SourceHanSansSC-Normal';
+//  src: url('../font/SourceHanSansSC-ExtraLight.eot');
+//  src: url('../font/SourceHanSansSC-Normal.eot?#font-spider') format('embedded-opentype'),
+//  url('../font/SourceHanSansSC-Normal.woff') format('woff'),
+//  url('../font/SourceHanSansSC-Normal.ttf') format('truetype'),
+//  url('../font/SourceHanSansSC-Normal.svg') format('svg');
+//  font-weight: normal;
+//  font-style: normal;
+//}
+//
+//@font-face {
+//  font-family: 'SourceHanSansSC-Medium';
+//  src: url('../font/SourceHanSansSC-Medium.eot');
+//  src: url('../font/SourceHanSansSC-Medium.eot?#font-spider') format('embedded-opentype'),
+//  url('../font/SourceHanSansSC-Medium.woff') format('woff'),
+//  url('../font/SourceHanSansSC-Medium.ttf') format('truetype'),
+//  url('../font/SourceHanSansSC-Medium.svg') format('svg');
+//  font-weight: normal;
+//  font-style: normal;
+//}
+//
+//@font-face {
+//  font-family: 'SourceHanSansSC-Regular';
+//  src: url('../font/SourceHanSansSC-Regular.eot');
+//  src: url('../font/SourceHanSansSC-Regular.eot?#font-spider') format('embedded-opentype'),
+//  url('../font/SourceHanSansSC-Regular.woff') format('woff'),
+//  url('../font/SourceHanSansSC-Regular.ttf') format('truetype'),
+//  url('../font/SourceHanSansSC-Regular.svg') format('svg');
+//  font-weight: normal;
+//  font-style: normal;
+//}
+//
+//@font-face {
+//  font-family: 'SourceHanSansSC-Light';
+//  src: url('../font/SourceHanSansSC-Light.eot');
+//  src: url('../font/SourceHanSansSC-Light.eot?#font-spider') format('embedded-opentype'),
+//  url('../font/SourceHanSansSC-Light.woff') format('woff'),
+//  url('../font/SourceHanSansSC-Light.ttf') format('truetype'),
+//  url('../font/SourceHanSansSC-Light.svg') format('svg');
+//  font-weight: normal;
+//  font-style: normal;
+//}
+//@font-face {
+//  font-family: 'DINPro-Light';
+//  src: url('../font/DINPro-Light.eot');
+//  src: url('../font/DINPro-Light.eot?#font-spider') format('embedded-opentype'),
+//  url('../font/DINPro-Light.woff') format('woff'),
+//  url('../font/DINPro-Light.ttf') format('truetype'),
+//  url('../font/DINPro-Light.svg') format('svg');
+//  font-weight: normal;
+//  font-style: normal;
+//}
+//
+//@font-face {
+//  font-family: 'DINPro-Medium';
+//  src: url('../font/DINPro-Medium.eot');
+//  src: url('../font/DINPro-Medium.eot?#font-spider') format('embedded-opentype'),
+//  url('../font/DINPro-Medium.woff') format('woff'),
+//  url('../font/DINPro-Medium.ttf') format('truetype'),
+//  url('../font/DINPro-Medium.svg') format('svg');
+//  font-weight: 300;
+//  font-style: normal;
+//}
+//
+//@font-face {
+//  font-family: 'STHeiti-Light';
+//  src: url('../font/SourceHanSansSC-ExtraLight.eot');
+//  src: url('../font/SourceHanSansSC-Normal.eot?#font-spider') format('embedded-opentype'),
+//  url('../font/SourceHanSansSC-Normal.woff') format('woff'),
+//  url('../font/SourceHanSansSC-Normal.ttf') format('truetype'),
+//  url('../font/SourceHanSansSC-Normal.svg') format('svg');
+//  font-weight: normal;
+//  font-style: normal;
+//}
+//
+//.ff-ssel {
+//  font-family: "SourceHanSansSC-ExtraLight" !important;
+//}
+//
+//.ff-ssl {
+//  font-family: "SourceHanSansSC-Light" !important;
+//}
+//
+//.ff-ssr {
+//  font-family: "SourceHanSansSC-Regular" !important;
+//}
+//.ff-ssm {
+//  font-family: "SourceHanSansSC-Medium" !important;
+//}
+//.ff-ssn {
+//  font-family: "SourceHanSansSC-Normal" !important;
+//}
+//.ff-dpl{
+//  font-family: "DINPro-Light" !important;
+//}
+//
+//.ff-dpm {
+//  font-family: "DINPro-Medium" !important;
+//}
+//
+//.ff-sthl{
+//  font-family: "STHeiti-Light" !important;
+//}
+.fz-0 {
+  font-size: 0;
+}
+
+.fz-8 {
+  font-size: @rem-8-px;
+}
+
+.fz-12 {
+  font-size: @rem-12-px;
+}
+
+.fz-14 {
+  font-size: @rem-14-px;
+}
+
+.fz-16 {
+  font-size: @rem-16-px;
+}
+.fz-18 {
+  font-size: @rem-18-px;
+}
+.fz-20 {
+  font-size: @rem-20-px;
+}
+.fz-22 {
+  font-size: @rem-22-px;
+}
+.fz-24 {
+  font-size: @rem-24-px;
+}
+.fz-26 {
+  font-size: @rem-26-px;
+}
+.fz-28 {
+  font-size: @rem-28-px;
+}
+
+.fz-30 {
+  font-size: @rem-30-px;
+}
+
+.fz-32 {
+  font-size: @rem-32-px;
+}
+
+.fz-36 {
+  font-size: @rem-36-px;
+}
+
+.fz-40 {
+  font-size: @rem-40-px;
+}
+.fz-42{
+  font-size: @rem-42-px;
+}
+.fz-44 {
+  font-size: @rem-44-px;
+}
+.fz-46 {
+  font-size: @rem-46-px;
+}
+.fz-48 {
+  font-size: @rem-48-px;
+}
+.fz-60 {
+  font-size: @rem-60-px;
+}
+.fz-66 {
+  font-size: @rem-66-px;
+}
+.fz-70 {
+  font-size: @rem-70-px;
+}
+.fz-80 {
+  font-size: @rem-80-px;
+}
+.c-ef4b4b{
+  color:#ef4b4b;
+}
+.c-black {
+  color: #000000;
+}
+
+.c-white {
+  color: #ffffff;
+}
+.c-66 {
+  color: #666666;
+}
+.c-red {
+  color: @c-ef4b4b;
+}
+
+.c-wred{
+  color:@c-wred;
+}
+.bdc-wred{
+  border-color: @c-wred;
+}
+.c-a2{
+  color:#a2a2a2;
+}
+.c-orange {
+  color: @c-ffa867;
+}
+
+.c-blue {
+  color: @c-blue;
+}
+
+.c-golden {
+  color: @c-golden;
+}
+.c-91{
+  color:#919191;
+}
+
+.c-99{
+  color:#999999;
+}
+.c-bc{
+  color:#bcbcbc;
+}
+
+.c-b0{
+  color:#b0b0b0;
+}
+.c-8f {
+  color: @c-8f8f8f;
+}
+
+.c-48 {
+  color: @c-484848;
+}
+
+.c-f6 {
+  color: #f6f6f6;
+}
+
+.c-85 {
+  color: @c-85;
+}
+
+.c-7a {
+  color: @c-7a;
+}
+
+.c-d8 {
+  color: #d8d8d8;
+}
+.c-84 {
+  color: #848484;
+}
+.c-ca{
+  color: #cacaca;
+}
+
+.c-dd {
+  color: #dddddd;
+}
+
+.c-wblue{
+  color:#006ac9;
+}
+.c-worange{
+  color: @c-worange;
+}
+.bkc-orange {
+  background-color: @c-ffb73e;
+}
+.bkc-worange{
+  background-color: @c-worange;
+}
+.bkc-wblue{
+  background-color: @c-wblue;
+}
+
+.bkc-logoblue{
+  background-color: @c-logoblue;
+}
+.bkc-green {
+  background-color: #20cd55;
+}
+
+.bkc-white {
+  background-color: @c-ffffff;
+}
+.bkc-wred {
+  background-color: @c-wred;
+}
+.bkc-blue {
+  background-color: @c-blue;
+}
+
+.bkc-black {
+  background-color: @c-000000;
+}
+
+.bkc-red {
+  background-color: red;
+}
+
+.bkc-eb {
+  background-color: @c-ebebeb;
+}
+
+.bkc-1d {
+  background-color: @c-1d;
+}
+
+.bkc-c8 {
+  background-color: #c8c8c8;
+}
+
+.bkc-f6 {
+  background-color: #f6f6f6;
+}
+
+.bkc-f3 {
+  background-color: #f3f3f3;
+}
+
+.bkc-8d {
+  background-color: #8d8d8d;
+}
+.bkc-f4 {
+  background-color: #f4f4f4;
+}
+.bdc-d8 {
+  border: 1px solid #d8d8d8;
+}
+
+.bdc-blue {
+  border: 1px solid #0068ff;
+}
+
+.border-top-e4 {
+  border-top: 1px solid #e4e4e4;
+}
+
+.relative {
+  position: relative;
+}
+
+.like-div {
+  display: block;
+  position: relative;
+}
+
+.like-inlinediv {
+  .displayInline();
+}
+
+.f-right {
+  float: right;
+}
+
+.f-left {
+  float: left;
+}
+
+.ta-left {
+  text-align: left;
+}
+
+.ta-right {
+  text-align: right;
+}
+
+.ta-center {
+  text-align: center;
+}
+
+.lt-ab {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.lb-ab {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.rt-ab {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.rb-ab {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.f-ab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+//@font-face {
+//  font-family: 'iconfont';
+//  src: url('../font/iconfont.eot'); /* IE9*/
+//  src: url('../font/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../font/iconfont.woff') format('woff'), /* chrome、firefox */ url('../font/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('../font/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+//}
+//
+//.iconfont {
+//  font-family: "iconfont" !important;
+//  font-style: normal;
+//  -webkit-font-smoothing: antialiased;
+//  -webkit-text-stroke-width: 0.2px;
+//  -moz-osx-font-smoothing: grayscale;
+//}
+
+.placeholdercolor(@color-placeholder);
+
+.color-icon-grey {
+  color: #7a7a7a;
+}
+
+.loading-div {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  left: 50%;
+  top: 50%;
+  margin-left: -20px;
+  margin-top: -20px;
+  z-index: 999;
+}
+
+.double-bounce1,
+.double-bounce2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0068ff;
+  .transparent_class(60);
+  .roundedCorners(50%);
+  .animation-name(bounce);
+  .animation-duration(1.0s);
+  .animation-iteration-count(infinite);
+  .animation-timing-function(ease-in-out);
+  .animation-direction(alternate);
+}
+
+.double-bounce2 {
+  .animation-delay(-1.0s);
+}
+
+.keyfametransform(bounce, scale(0), scale(1));
+
+.lh-OneAndHalf {
+  line-height: 1.5em;
+}
+
+.lh-once {
+  line-height: 1em;
+}
+
+.lh-double {
+  line-height: 2em;
+  height: 2em;
+}
+
+.lh-triple {
+  line-height: 3em;
+  height: 3em;
+}
+
+.wrapper-mobile {
+  margin: @rem-14-px @rem-14-px 0 @rem-14-px;
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.wrapper-mobile-small {
+  margin: @rem-8-px @rem-14-px 0 @rem-14-px;
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.wrapper-side-mobile {
+  margin-right: @rem-14-px;
+  margin-left: @rem-14-px;
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.wrapper-box-padding {
+  padding: @rem-46-px;
+}
+
+.wrapper-box-padding-no-side {
+  padding: @rem-60-px;
+}
+
+.absolute-right-center {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -@rem-16-px;
+}
+
+.fix-bottom-btn-box {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  line-height: @rem-120-px;
+  height: @rem-120-px;
+  text-align: center;
+  font-size: 0;
+}
+
+.full {
+  width: 100%;
+  height: 100%;
+}
+
+.half-width {
+  width: 50%;
+  height: 100%
+}
+
+.Btn {
+  &:disabled {
+    background-color: @c-8f8f8f;
+  }
+}
+
+.list-item-padding {
+  padding: @rem-34-px @rem-46-px;
+}
+
+#fix-bottom-btn-holder {
+  height: @rem-120-px;
+}
+
+.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+
+
+
+.keyfameFromToLeft(@name:name;@methodfrom:0px;@methodto:10px) {
+
+  @keyframes @name {
+    0% {
+      left: @methodfrom;
+    }
+
+    100% {
+      left: @methodto;
+    }
+  }
+
+  @-webkit-keyframes @name {
+    0% {
+      left: @methodfrom;
+    }
+
+    100% {
+      left: @methodto;
+    }
+  }
+}
+
+.keyfameFromToLeftDisappear(@name:name;@methodfrom:0px;@methodto:10px) {
+
+  @keyframes @name {
+    0% {
+      left: @methodfrom;
+    }
+
+    90% {
+      left: @methodto;
+    }
+
+    100% {
+      left: -100%;
+    }
+  }
+
+  @-webkit-keyframes @name {
+    0% {
+      left: @methodfrom;
+    }
+
+    90% {
+      left: @methodto;
+    }
+
+    100% {
+      left: -100%;
+    }
+  }
+}
+
+.keyfameFromToLeft(slideInRight, 100%, 0);
+.keyfameFromToLeftDisappear(slideOutRight, 0, -20%);
+.keyfameFromToLeft(slideInLeft, -20%, 0);
+.keyfameFromToLeft(slideOutLeft, 0, 100%);
+
+.right,
+.left,
+.right-add,
+.left-add {
+  .animation-duration(.5s);
+  .animation-timing-function(@cubic-bezier-style-one);
+}
+
+
+.ng-enter,
+.ng-leave {
+  .fixedTag {
+    display: block;
+  }
+}
+
+
+.ng-enter-active,
+.ng-leave-active {
+  .fixedTag {
+    display: none;
+  }
+}
+
+
+.no-direction-add {
+  .animation-duration(0s);
+}
+
+.right-add.ng-enter,
+.right.right-add.ng-enter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  .animation-name(slideInRight);
+  z-index: 999;
+}
+
+.right.ng-leave,
+.right-add.ng-leave,
+.right-add.ng-leave.left-remove.left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  .animation-name(slideOutRight);
+  z-index: 99;
+}
+
+.left.left-add.ng-enter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  .animation-name(slideInLeft);
+  z-index: 99;
+}
+
+.left.ng-leave,
+.left-add.ng-leave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  .animation-name(slideOutLeft);
+  z-index: 999;
+}
+
+.trsnsition-timing-function-cubic-back{
+  .transition-timing-function-cubic(cubic-bezier(0.80, 0.00, 0.80, 1.00));
+}
+.trsnsition-timing-function-cubic-ahead{
+  .transition-timing-function-cubic(cubic-bezier(0.20, 0.00, 0.20, 1.00));
+}

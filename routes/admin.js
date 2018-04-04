@@ -93,8 +93,7 @@ router.get('/getImage', function (req, res, next) {
 
     request.end();
 
-})
-;
+});
 
 
 module.exports = router;
