@@ -24,7 +24,7 @@ router.use(function(req, res, next) {
 	if(req.signedCookies[settings.admin_auth_cookie_name]) {}
 	next();
 });
-router.post("/admin/addOne", Admin.addOne);
+router.post("/admin/addOne",authAdmin, Admin.addOne);
 router.post("/admin/login", Admin.login);
 router.post("/admin/logOut", Admin.logOut);
 
