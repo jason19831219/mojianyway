@@ -2,25 +2,51 @@
  * Created by Administrator on 2015/4/15.
  * 文章标签对象
  */
-var mongoose = require("mongoose");
-var shortid = require("shortid");
+const mongoose = require("mongoose");
+const shortid = require("shortid");
+const moment = require("moment");
+
 var Schema = mongoose.Schema;
 
-
-var ContentTagSchema = new Schema({
+var MojiSetSchema = new Schema({
 	_id: {
 		type: String,
-        
 		"default": shortid.generate
 	},
 	name: String,
-	alias: String, //别名
-	date: { type: Date, default: Date.now },
+	desc: String,
+	author: {
+		type: String,
+		default: ""
+	},
+	avatar: {
+		type: String,
+		default: "/"
+	},
+	enable: {
+		type: Boolean,
+		default: true
+	},
+	createDate: {
+		type: Date,
+		default: Date.now
+	},
+	updateDate: {
+		type: Date,
+		default: Date.now
+	},
 	comments: String
 });
 
 
-var ContentTag = mongoose.model("ContentTag", ContentTagSchema);
+MojiSetSchema.path("createDate").get(function (v) {
+	return moment(v).format("YYYY-MM-DD HH:mm:ss");
+});
+MojiSetSchema.path("updateDate").get(function (v) {
+	return moment(v).format("YYYY-MM-DD HH:mm:ss");
+});
 
-module.exports = ContentTag;
+var MojiSet = mongoose.model("MojiSet", MojiSetSchema);
+
+module.exports = MojiSet;
 

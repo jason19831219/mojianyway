@@ -20,7 +20,8 @@ db.on("close", function () {
   console.log("数据库断开，重新连接数据库");
 });
 
-exports.AdminUser = require("./AdminUser");
+exports.Admin = require("./Admin");
 exports.User = require("./User");
 exports.Article = require("./Article");
 exports.Moji = require("./Moji");
+exports.MojiSet = require("./MojiSet");

@@ -6,7 +6,7 @@ var mongoose = require("mongoose");
 var shortid = require("shortid");
 var Schema = mongoose.Schema;
 var User = require("./User");
-var AdminUser = require("./AdminUser");
+var AdminUser = require("./Admin");
 var Content = require("./test");
 var moment = require("moment");
 

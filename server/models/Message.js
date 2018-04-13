@@ -7,7 +7,7 @@ var shortid = require("shortid");
 var Schema = mongoose.Schema;
 var moment = require("moment");
 moment.locale("zh-cn");
-var AdminUser = require("./AdminUser");
+var AdminUser = require("./Admin");
 var User = require("./User");
 var Content = require("./test");
 var MessageSchema = new Schema({

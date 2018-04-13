@@ -62,8 +62,6 @@ class Moji {
     if (author) {
       queryObj.author = author;
     }
-    console.log(JSON.stringify(queryObj))
-    // queryObj.imgSrc = {$ne: []}
     const mojis = await MojiModel.find(queryObj).sort({
       updateTime: -1
     }).skip(Number(pageSize) * (Number(pageNumber) - 1)).limit(Number(pageSize)).exec();

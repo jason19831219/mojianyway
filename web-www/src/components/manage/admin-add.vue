@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div class="contentContainer">
     <div class="mainbody">
@@ -7,7 +8,7 @@
         </el-col>
         <el-col :xs="22" :sm="22" :md="22" :lg="22" :xl="14" class="login-main">
           <div class="login-box">
-            <el-form label-position="top" :model="adminAddForm" :rules="regRules" ref="adminAddForm" label-width="0px" class="demo-ruleForm login-container">
+            <el-form label-position="top" :model="adminAddForm" :rules="adminAddRule" ref="adminAddForm" label-width="0px">
               <h3 class="title">
                 <span>注册</span>
               </h3>
@@ -17,7 +18,7 @@
               <el-form-item prop="password" label="密码">
                 <el-input placeholder="请输入密码" type="password" v-model="adminAddForm.password"></el-input>
               </el-form-item>
-              <el-form-item prop="confirmPassword" label="重复密码">
+              <el-form-item prop="passwordConfirmed" label="确认密码">
                 <el-input placeholder="请确认密码" type="password" v-model="adminAddForm.passwordConfirmed"></el-input>
               </el-form-item>
               <el-form-item prop="mobile" label="手机号">
@@ -36,9 +37,12 @@
     </div>
   </div>
 </template>
+
 <script>
 import api from '@/api'
 import validatorUtil from '@/utils/validation'
+import {createNamespacedHelpers} from 'vuex'
+const {mapState} = createNamespacedHelpers('server/admin')
 
 export default {
   name: 'adminAdd',
@@ -49,24 +53,17 @@ export default {
   },
   data () {
     return {
-      adminAddForm: {
-        userName: '',
-        password: '',
-        passwordConfirmed: '',
-        mobile: ''
-      },
-      regRules: {
+      adminAddRule: {
         userName: [
           {
             required: true,
-            message: '请输入用户名',
-            trigger: 'blur'
-          },
-          {
             validator: (rule, value, callback) => {
-              if (!validatorUtil.checkUserName(value)) {
-                callback(new Error('5-12个英文字符!'))
+              if (value === '') {
+                callback(new Error('请输入用户名'))
               } else {
+                if (!validatorUtil.checkUserName(value)) {
+                  callback(new Error('5-12个英文字符!'))
+                }
                 callback()
               }
             },
@@ -76,31 +73,28 @@ export default {
         password: [
           {
             required: true,
-            message: '请输入密码',
-            trigger: 'blur'
-          },
-          {
             validator: (rule, value, callback) => {
-              if (!validatorUtil.checkPwd(value)) {
-                callback(new Error('6-12位，只能包含字母、数字和下划线!'))
+              if (value === '') {
+                callback(new Error('请输入密码'))
               } else {
+                if (!validatorUtil.checkPwd(value)) {
+                  callback(new Error('6-12位，只能包含字母、数字和下划线!'))
+                }
                 callback()
               }
             },
-            trigger: 'blur'
-          }
+            trigger: 'blur'}
         ],
         passwordConfirmed: [
           {
             required: true,
-            message: '请确认密码',
-            trigger: 'blur'
-          },
-          {
             validator: (rule, value, callback) => {
-              if (value !== this.adminAddForm.password) {
-                callback(new Error('两次输入密码不一致!'))
+              if (value === '') {
+                callback(new Error('请输入确认密码'))
               } else {
+                if (value !== this.adminAddForm.password) {
+                  callback(new Error('两次输入密码不一致!'))
+                }
                 callback()
               }
             },
@@ -109,15 +103,13 @@ export default {
         ],
         mobile: [
           {
-            required: true,
-            message: '请确认手机号',
-            trigger: 'blur'
-          },
-          {
             validator: (rule, value, callback) => {
-              if (!validatorUtil.checkPhoneNum(value)) {
-                callback(new Error('请确认正确的手机号!'))
+              if (value === '') {
+                callback(new Error('请输入手机号'))
               } else {
+                if (!validatorUtil.checkMobilePhoneNum(value)) {
+                  callback(new Error('请输入正确的手机号'))
+                }
                 callback()
               }
             },
@@ -127,13 +119,18 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState([
+      'adminAddForm'
+    ])
+  },
   methods: {
     submitRegForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let params = this.adminAddForm
           api
-            .post('adminUser/addOne', params, true)
+            .post('admin/addOne', params, true)
             .then(result => {
               if (result.data.state === 'success') {
                 this.$message({

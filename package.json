@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@alicloud/sms-sdk": "^1.0.8",
+    "ajv": "^6.4.0",
     "async": "^2.6.0",
     "cheerio": "^1.0.0-rc.2",
     "china-time": "^0.12.3",
@@ -15,9 +16,11 @@
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
     "express": "~4.16.0",
+    "express-jwt": "^5.3.1",
     "express-session": "^1.15.6",
     "formidable": "^1.2.1",
     "http-errors": "~1.6.2",
+    "jsonwebtoken": "^8.2.1",
     "moment": "^2.22.0",
     "mongoose": "^5.0.12",
     "morgan": "~1.9.0",
@@ -26,6 +29,8 @@
     "request": "^2.85.0",
     "sha1": "^1.1.1",
     "shortid": "^2.2.8",
-    "validator": "^9.4.1"
+    "validator": "^9.4.1",
+    "webpack": "^4.5.0",
+    "webpack-dev-middleware": "^3.1.2"
   }
 }

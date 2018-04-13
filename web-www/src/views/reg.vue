@@ -62,7 +62,8 @@ export default {
       this.$refs[formName].validateField('mobile', ref => {
         if (!ref) {
           let params = { mobile: this.regForm.mobile }
-          api.post('users/getSmsCode', params)
+          api
+            .post('users/getSmsCode', params)
             .then(result => {
               if (result.data.state === 'success') {
                 const TIME_COUNT = 60
@@ -100,12 +101,13 @@ export default {
             .post('users/doReg', params)
             .then(result => {
               if (result.data.state === 'success') {
+                localStorage.setItem('MOJI_TOKEN', result.token)
                 this.$message({
                   message: result.data.message,
-                  type: 'success',
-                  onClose: () => {
-                    window.location = '/'
-                  }
+                  type: 'success'
+                  // onClose: () => {
+                  //   window.location = '/'
+                  // }
                 })
               } else {
                 this.$message({

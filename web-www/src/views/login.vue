@@ -1,94 +1,98 @@
 <template>
-  <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
-    <el-form-item label="密码" prop="pass">
-      <el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
+  <el-form :model="regForm" status-icon :rules="this.regRule" ref="regForm" label-width="100px" class="demo-ruleForm">
+    <el-form-item label="手机号" prop="mobile">
+      <el-input type="number" v-model="regForm.mobile" auto-complete="off"></el-input>
+      <el-button v-show="show" type="primary" @click="getSmsCode('regForm')">获取验证码</el-button>
+      <el-button v-show="!show">{{count}} s</el-button>
     </el-form-item>
-    <el-form-item label="确认密码" prop="checkPass">
-      <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
-    </el-form-item>
-    <el-form-item label="年龄" prop="age">
-      <el-input v-model.number="ruleForm2.age"></el-input>
+    <el-form-item label="验证码" prop="smsCode">
+      <el-input type="number" v-model="regForm.smsCode" auto-complete="off"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
-      <el-button @click="resetForm('ruleForm2')">重置</el-button>
+      <el-button @click="getToken('regForm')">提交</el-button>
     </el-form-item>
   </el-form>
 </template>
+
 <script>
-// import validator from '../utils/validation'
+import {mapGetters} from 'vuex'
+import api from '../api'
 
 export default {
 
+  name: 'login',
   data () {
-    var checkAge = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('年龄不能为空'))
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入数字值'))
-        } else {
-          if (value < 18) {
-            callback(new Error('必须年满18岁'))
-          } else {
-            callback()
-          }
-        }
-      }, 1000)
-    }
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'))
-      } else {
-        if (this.ruleForm2.checkPass !== '') {
-          this.$refs.ruleForm2.validateField('checkPass')
-        }
-        callback()
-      }
-    }
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'))
-      } else if (value !== this.ruleForm2.pass) {
-        callback(new Error('两次输入密码不一致!'))
-      } else {
-        callback()
-      }
-    }
     return {
-      ruleForm2: {
-        pass: '',
-        checkPass: '',
-        age: ''
-      },
-      rules2: {
-        pass: [
-          {validator: validatePass, trigger: 'blur'}
-        ],
-        checkPass: [
-          {validator: validatePass2, trigger: 'blur'}
-        ],
-        age: [
-          {validator: checkAge, trigger: 'blur'}
-        ]
-      }
+      show: true,
+      count: 0
     }
   },
+  computed: {
+    ...mapGetters({
+      regForm: 'frontend/user/regForm',
+      regRule: 'frontend/user/regRule'
+    })
+  },
   methods: {
-    submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
+    getSmsCode (formName) {
+      var mobile = this.$route.query.mobile
+      console.log(mobile)
+      this.$refs[formName].validateField('mobile', ref => {
+        if (!ref) {
+          let params = { mobile: this.regForm.mobile }
+          api
+            .post('users/getSmsCode', params)
+            .then(result => {
+              if (result.data.state === 'success') {
+              } else {
+                this.$message({
+                  message: result.data.message,
+                  type: 'error'
+                })
+              }
+            })
+            .catch(err => {
+              this.$message.error(err.response.data.error)
+            })
+        }
+      })
+    },
+    getToken (formName) {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          alert('submit!')
+          let params = this.regForm
+          api
+            .post('users/auth', params)
+            .then(result => {
+              if (result.data.state === 'success') {
+                localStorage.setItem('MOJI_ANYWAY_TOKEN', result.data.token)
+                this.$message({
+                  message: result.data.message,
+                  type: 'success'
+                  // onClose: () => {
+                  //   window.location = '/'
+                  // }
+                })
+              } else {
+                this.$message({
+                  message: result.data.message,
+                  type: 'error'
+                })
+              }
+            })
+            .catch(err => {
+              this.$message.error(err.response.data.error)
+            })
         } else {
           console.log('error submit!!')
           return false
         }
       })
-    },
-    resetForm (formName) {
-      this.$refs[formName].resetFields()
     }
   }
 }
 </script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+</style>

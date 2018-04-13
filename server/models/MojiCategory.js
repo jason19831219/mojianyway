@@ -9,7 +9,7 @@ var moment = require("moment");
 moment.locale("zh-cn");
 var shortid = require("shortid");
 var MojiSet = require("./MojiSet");
-var AdminUser = require("./AdminUser");
+var AdminUser = require("./Admin");
 var User = require("./User");
 var MojiCategorySchema = new Schema({
   _id: {

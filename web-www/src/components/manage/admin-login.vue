@@ -7,7 +7,7 @@
         </el-col>
         <el-col :xs="22" :sm="22" :md="22" :lg="22" :xl="14" class="login-main">
           <div class="login-box">
-            <el-form label-position="top" :model="adminLoginForm" :rules="loginRules" ref="adminLoginForm" label-width="0px" class="demo-ruleForm login-container">
+            <el-form label-position="top" :model="adminLoginForm" :rules="adminLoginRule" ref="adminLoginForm" label-width="0px" class="demo-ruleForm login-container">
               <h3 class="title">
                 <span>注册</span>
               </h3>
@@ -18,7 +18,7 @@
                 <el-input placeholder="请输入密码" type="password" v-model="adminLoginForm.password"></el-input>
               </el-form-item>
               <el-form-item class="submit-btn">
-                <el-button  type="primary" @click="submitRegForm('adminLoginForm')">登录</el-button>
+                <el-button  type="primary" @click="login('adminLoginForm')">登录</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -32,7 +32,8 @@
 </template>
 <script>
 import api from '@/api'
-import validatorUtil from '@/utils/validation'
+import {createNamespacedHelpers} from 'vuex'
+const {mapState} = createNamespacedHelpers('server/admin')
 
 export default {
   name: 'adminAdd',
@@ -43,62 +44,28 @@ export default {
   },
   data () {
     return {
-      adminLoginForm: {
-        userName: '',
-        password: ''
-      },
-      loginRules: {
-        userName: [
-          {
-            required: true,
-            message: '请输入用户名',
-            trigger: 'blur'
-          },
-          {
-            validator: (rule, value, callback) => {
-              if (!validatorUtil.checkUserName(value)) {
-                callback(new Error('5-12个英文字符!'))
-              } else {
-                callback()
-              }
-            },
-            trigger: 'blur'
-          }
-        ],
-        password: [
-          {
-            required: true,
-            message: '请输入密码',
-            trigger: 'blur'
-          },
-          {
-            validator: (rule, value, callback) => {
-              if (!validatorUtil.checkPwd(value)) {
-                callback(new Error('6-12位，只能包含字母、数字和下划线!'))
-              } else {
-                callback()
-              }
-            },
-            trigger: 'blur'
-          }
-        ]
-      }
     }
   },
+  computed: {
+    ...mapState([
+      'adminLoginForm',
+      'adminLoginRule'
+    ])
+  },
   methods: {
-    submitLoginForm (formName) {
+    login (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let params = this.adminLoginForm
           api
-            .post('adminUser/addOne', params, true)
+            .post('admin/login', params, true)
             .then(result => {
               if (result.data.state === 'success') {
                 this.$message({
-                  message: '恭喜，注册成功，请重新登录！',
+                  message: '登录成功',
                   type: 'success',
                   onClose: () => {
-                    window.location = '/moji-admin'
+                    window.location = '/moji-admin/moji-list'
                   }
                 })
               } else {

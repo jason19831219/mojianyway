@@ -3,20 +3,30 @@ module.exports = [{
   name: 'Manage',
   id: 'basic',
   sub: [
-    // {
-    //   path: 'admin-add',
-    //   name: 'Admin add',
-    //   componentName: 'admin-add'
-    // },
     {
-      path: 'moji',
-      name: 'Moji',
-      componentName: 'moji-list'
+      path: 'admin-add',
+      name: 'Admin add',
+      componentName: 'admin-add'
     },
     {
       path: 'moji-upload',
       name: 'Moji upload',
       componentName: 'moji-upload'
+    },
+    {
+      path: 'moji',
+      name: 'Moji',
+      componentName: 'moji'
+    },
+    {
+      path: 'moji-set',
+      name: 'Moji Set',
+      componentName: 'moji-set'
+    },
+    {
+      path: 'article',
+      name: 'Article',
+      componentName: 'article-list'
     }
   ]
 // }, {

@@ -5,7 +5,7 @@
       <paths name="119.23.209.122">
         <serverdata>
           <mappings>
-            <mapping deploy="/usr/share/dribbbleT" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/usr/share/mojianyway" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

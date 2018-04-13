@@ -5,16 +5,25 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
-import fontendUser from './modules/frontend-user'
+import User from './modules/user'
+import Admin from './modules/admin'
+import MojiSet from './modules/mojiSet'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    frontend: {
+    client: {
       namespaced: true,
       modules: {
-        user: fontendUser
+        user: User
+      }
+    },
+    server: {
+      namespaced: true,
+      modules: {
+        admin: Admin,
+        mojiSet: MojiSet
       }
     }
   }
