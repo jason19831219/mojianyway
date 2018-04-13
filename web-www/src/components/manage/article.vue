@@ -40,7 +40,7 @@
         label="图片地址"
         width="auto">
         <template slot-scope="scope">
-          <span v-for="items in scope.row.imgSrc">
+          <span v-for="items in scope.row.imgSrc" :key="items.id">
             <img :srcset="items[0]" style="height: 100px">
           </span>
         </template>
