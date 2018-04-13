@@ -65,7 +65,7 @@ export default {
                   message: '登录成功',
                   type: 'success',
                   onClose: () => {
-                    window.location = '/moji-admin/moji'
+                    this.$router.push({path: '/moji-admin/moji'})
                   }
                 })
               } else {

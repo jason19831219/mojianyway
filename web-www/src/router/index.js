@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Reg from '../views/reg'
+// import Reg from '../views/reg'
 import Login from '../views/login'
 import MobileCheck from '../components/mobile-check'
 import SmsCodeCheck from '../components/smscode-check'
@@ -27,16 +27,11 @@ menus.forEach((item) => {
 console.log(manageSubRouters)
 
 var routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Reg
-  },
-  {
-    path: '/reg',
-    name: 'Reg',
-    component: Reg
-  },
+  // {
+  //   path: '/',
+  //   name: 'Home',
+  //   component: Reg
+  // },
   {
     path: '/login',
     name: 'Login',

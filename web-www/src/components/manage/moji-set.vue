@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <el-button type="text" @click="addDialogVisable = true">添加moji Set</el-button>
+      <el-button type="text" @click="DialogVisable = true">添加MOJI SET</el-button>
     </div>
     <el-table
       :data="list"
@@ -60,27 +60,27 @@
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page=pageNumber
+      :current-page=listInfo.pageNumber
       :page-sizes="[10,20,50,100]"
-      :page-size=pageSize
+      :page-size=listInfo.pageSize
       layout="total, sizes, prev, pager, next, jumper"
-      :total=totalCount>
+      :total=listInfo.totalItems>
     </el-pagination>
-    <el-dialog title="添加moji set" :visible.sync="addDialogVisable">
-      <el-form :model="mojiSetAddForm" :rules="mojiSetAddRule" ref="mojiSetAddForm">
+    <el-dialog title="添加moji set" :visible.sync="DialogVisable">
+      <el-form :model="addForm" :rules="mojiSetAddRule" ref="addForm">
         <el-form-item label="MojiSetName" prop="name">
-          <el-input v-model="mojiSetAddForm.name" auto-complete="off"></el-input>
+          <el-input v-model="addForm.name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="MojiSetDesc" prop="desc">
-          <el-input v-model="mojiSetAddForm.desc" auto-complete="off"></el-input>
+          <el-input v-model="addForm.desc" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="MojiSetAuthor" prop="author">
-          <el-input v-model="mojiSetAddForm.author" auto-complete="off"></el-input>
+          <el-input v-model="addForm.author" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="mojiSetAddOne('mojiSetAddForm')">确定添加</el-button>
+        <el-button @click="DialogVisable = false">取 消</el-button>
+        <el-button type="primary" @click="mojiSetAddOne('addForm')">确定添加</el-button>
       </div>
     </el-dialog>
   </div>
@@ -88,8 +88,7 @@
 
 <script>
 import api from '@/api'
-import {createNamespacedHelpers} from 'vuex'
-const {mapState} = createNamespacedHelpers('server/mojiSet')
+import { mapGetters } from 'vuex'
 
 export default {
   methods: {
@@ -97,41 +96,16 @@ export default {
       rows.splice(index, 1)
     },
     handleSizeChange (val) {
-      this.pageSize = val
-      this.getList()
+      this.$store.dispatch('server/mojiSet/setPageSize', val)
     },
     handleCurrentChange (val) {
-      this.pageNumber = val
-      this.getList()
-    },
-    getList () {
-      let params = {
-        pageNumber: this.pageNumber,
-        pageSize: this.pageSize,
-        nameReg: ''
-      }
-      api
-        .get('mojiSet/getList', params, true)
-        .then(response => {
-          console.log(response.data)
-          if (response.data.state === 'success') {
-            this.list = response.data.list
-            this.totalCount = response.data.pageInfo.totalItems
-          } else {
-            this.$message({
-              message: response.data.message,
-              type: 'error'
-            })
-          }
-        })
-        .catch(err => {
-          this.$message.error(err.toString())
-        })
+      this.$store.dispatch('server/mojiSet/setPageNumber', val)
+      this.$store.dispatch('server/mojiSet/getMojiSetList')
     },
     mojiSetAddOne (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let params = this.mojiSetAddForm
+          let params = this.addForm
           api
             .post('mojiSet/addOne', params, true)
             .then(result => {
@@ -161,24 +135,22 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'mojiSetAddForm',
-      'mojiSetAddRule'
-    ])
+    ...mapGetters({
+      list: 'server/mojiSet/mojiSetList',
+      listInfo: 'server/mojiSet/mojiSetListPageInfo',
+      addForm: 'server/mojiSet/addForm',
+      mojiSetAddRule: 'server/mojiSet/mojiSetAddRule'
+    })
   },
   component: {
   },
   data () {
     return {
-      list: [],
-      pageNumber: 1,
-      pageSize: 10,
-      totalCount: 0,
-      addDialogVisable: false
+      DialogVisable: false
     }
   },
-  mounted: function () {
-    this.getList()
+  mounted () {
+    this.$store.dispatch('server/mojiSet/getMojiSetList')
   }
 }
 </script>

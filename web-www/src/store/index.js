@@ -7,6 +7,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import User from './modules/user'
 import Admin from './modules/admin'
+import Moji from './modules/moji'
 import MojiSet from './modules/mojiSet'
 
 Vue.use(Vuex)
@@ -23,6 +24,7 @@ export default new Vuex.Store({
       namespaced: true,
       modules: {
         admin: Admin,
+        moji: Moji,
         mojiSet: MojiSet
       }
     }

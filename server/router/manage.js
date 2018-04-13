@@ -33,9 +33,8 @@ router.get("/article/getList", authAdmin, Article.getArticles);
 
 router.post("/article/updateArticle",authAdmin, Article.updateArticle);
 
-router.post("/moji/addOne",authAdmin, Moji.setMoji);
-
-router.get("/moji/getList",authAdmin, Moji.getList);
+router.post("/moji/addOne",authAdmin, Moji.addOne);
+router.get("/moji/getAll",authAdmin, Moji.getAll);
 
 router.post("/mojiSet/addOne",authAdmin, MojiSet.addOne);
 router.get("/mojiSet/getList",authAdmin, MojiSet.getList);

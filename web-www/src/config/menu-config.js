@@ -9,11 +9,6 @@ module.exports = [{
       componentName: 'admin-add'
     },
     {
-      path: 'moji-upload',
-      name: 'Moji upload',
-      componentName: 'moji-upload'
-    },
-    {
       path: 'moji',
       name: 'Moji',
       componentName: 'moji'
@@ -26,7 +21,7 @@ module.exports = [{
     {
       path: 'article',
       name: 'Article',
-      componentName: 'article-list'
+      componentName: 'article'
     }
   ]
 // }, {

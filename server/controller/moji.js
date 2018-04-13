@@ -9,8 +9,7 @@ class Moji {
     // super()
   }
 
-  async setMoji(req,res) {
-
+  async addOne(req,res) {
     var src = req.body.src;
     if(!src){
       res.send({
@@ -45,7 +44,7 @@ class Moji {
   }
 
 
-  async getList(req, res, next) {
+  async getAll(req, res, next) {
     let pageNumber = req.query.pageNumber || 1;
     let pageSize = req.query.pageSize || 10;
     let nameReg = req.query.nameReg;
@@ -62,13 +61,13 @@ class Moji {
     if (author) {
       queryObj.author = author;
     }
-    const mojis = await MojiModel.find(queryObj).sort({
+    const list = await MojiModel.find(queryObj).sort({
       updateTime: -1
     }).skip(Number(pageSize) * (Number(pageNumber) - 1)).limit(Number(pageSize)).exec();
     const totalItems = await MojiModel.count(queryObj);
     res.send({
       state: 'success',
-      docs: mojis,
+      list: list,
       pageInfo: {
         totalItems,
         pageNumber: Number(pageNumber) || 1,

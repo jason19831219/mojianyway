@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div>
+      <el-button type="text" @click="DialogVisable = true">添加moji</el-button>
+    </div>
     <el-table
       :data="list"
       style="width: 100%"
@@ -53,21 +56,26 @@
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page=pageNumber
+      :current-page=listInfo.pageNumber
       :page-sizes="[10,20,50,100]"
-      :page-size=pageSize
+      :page-size=listInfo.pageSize
       layout="total, sizes, prev, pager, next, jumper"
-      :total=totalCount>
+      :total=listInfo.totalCount>
     </el-pagination>
     <el-dialog title="添加moji set" :visible.sync="addDialogVisable">
-      <el-form :model="mojiAddForm" :rules="mojiAddRule" ref="mojiAddForm">
-        <i v-if="!mojiAddForm.src" id="avatar-uploader-icon" class="el-icon-plus"></i>
-        <img v-if="mojiAddForm.src" :src=mojiAddForm.src />
-        <input @change="uploadImage" type="file" accept="image/*" name="image" />
+      <el-form :model="addForm" :rules="addRule" ref="addForm">
+        <el-input placeholder="请输入moji的名称" v-model="addForm.name"></el-input>
+        <el-input placeholder="请输入moji的作者" v-model="addForm.author"></el-input>
+        <span class="moji-upload-btn">
+          <i v-if="!addForm.src" id="avatar-uploader-icon" class="el-icon-plus"></i>
+          <img v-if="addForm.src" :src=addForm.src />
+          <input @change="uploadImage" type="file" accept="image/*" name="image" />
+        </span>
+        <div>{{addForm.src}}</div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveMoji('mojiSetAddForm')">保存moji</el-button>
+        <el-button @click="addDialogVisable = false">取 消</el-button>
+        <el-button type="primary" @click="saveMoji('mojiSetaddForm')">保存moji</el-button>
       </div>
     </el-dialog>
   </div>
@@ -75,7 +83,7 @@
 
 <script>
 import api from '@/api'
-import ExTable from '../table'
+import { mapGetters } from 'vuex'
 
 export default {
   methods: {
@@ -83,38 +91,13 @@ export default {
       rows.splice(index, 1)
     },
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+      this.$store.dispatch('server/moji/setPageSize', val)
     },
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
-    },
-    getList () {
-      let params = {
-        pageNumber: this.pageNumber,
-        pageSize: this.pageSize,
-        nameReg: ''
-      }
-      api
-        .get('moji/getList', params, true)
-        .then(response => {
-          console.log(response.data)
-          if (response.data.state === 'success') {
-            this.list = response.data.docs
-            this.totalCount = response.data.pageInfo.totalItems
-          } else {
-            this.$message({
-              message: response.data.message,
-              type: 'error'
-            })
-          }
-        })
-        .catch(err => {
-          this.$message.error(err.toString())
-        })
+      this.$store.dispatch('server/moji/setPageNumber', val)
     },
     uploadImage: function (e) {
       var file = e.target.files[0]
-      console.log(file)
       const isImage = (file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/jpeg')
       const isLt2M = file.size / 1024 / 50 < 2
       if (!isLt2M) {
@@ -131,7 +114,7 @@ export default {
       var reader = new FileReader()
 
       reader.onload = (e) => {
-        this.mojiForm.src = e.target.result
+        this.addForm.src = e.target.result
       }
 
       api
@@ -142,7 +125,7 @@ export default {
               message: response.data.message,
               type: 'success'
             })
-            this.mojiForm.src = '/' + response.data.info.path
+            this.addForm.src = '/' + response.data.info.path
           } else {
             this.$message({
               message: response.data.message,
@@ -154,7 +137,7 @@ export default {
         })
     },
     saveMoji: function (e) {
-      var data = this.mojiForm
+      var data = this.addForm
       api.post('moji/addOne', data, true)
         .then(result => {
           if (result.data.state === 'success') {
@@ -176,20 +159,71 @@ export default {
         })
     }
   },
+  computed: {
+    ...mapGetters({
+      list: 'server/moji/list',
+      listInfo: 'server/moji/listPageInfo',
+      addForm: 'server/moji/addForm',
+      addRule: 'server/moji/addRule'
+    })
+  },
   component: {
-    ExTable
   },
   data () {
     return {
-      list: [],
-      pageNumber: 1,
-      pageSize: 10,
-      totalCount: 0,
       addDialogVisable: false
     }
   },
-  mounted: function () {
-    this.getList()
+  mounted () {
+    this.$store.dispatch('server/moji/getAll')
   }
 }
 </script>
+<style>
+  .moji-upload-btn {
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    position: relative;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    width: 240px;
+    height: 240px;
+    overflow: hidden;
+  }
+  .moji-upload-btn:hover,
+  #avatar-uploader-icon:hover {
+    border-color: #409EFF;
+  }
+
+  .moji-upload-btn img{
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+  }
+  .moji-upload-btn input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+  }
+  #avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 100%;
+    height: 100%;
+    line-height: 240px;
+    text-align: center;
+  }
+</style>

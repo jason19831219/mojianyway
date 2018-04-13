@@ -1,11 +1,19 @@
+import api from '@/api'
 const state = () => ({
-  mojiSetList: [],
-  mojiSetAddForm: {
+  list: [],
+  listPageInfo: {
+    pageNumber: 1,
+    pageSize: 10,
+    totalItems: 0,
+    nameReg: ''
+  },
+  addForm: {
+    src: '',
     name: '',
     desc: '',
     author: ''
   },
-  mojiSetAddRule: {
+  addRule: {
     name: [
       {
         required: true,
@@ -15,6 +23,11 @@ const state = () => ({
           }
           callback()
         },
+        trigger: 'blur'
+      }
+    ],
+    src: [
+      {
         trigger: 'blur'
       }
     ],
@@ -32,12 +45,60 @@ const state = () => ({
 })
 
 const mutations = {
+  'receiveList' (state, {
+    list,
+    pageInfo
+  }) {
+    state.list = list
+    state.listPageInfo = pageInfo
+  }
 }
 
 const actions = {
+  async 'getAll' ({commit, state}) {
+    const {
+      data
+    } = await api.get('moji/getAll', {
+      ...state.listPageInfo
+    }, true)
+    if (data.list && data.state === 'success') {
+      commit('receiveList', {
+        ...data
+      })
+    }
+  },
+  async 'setPageSize' ({commit, dispatch, state}, val) {
+    state.listPageInfo.pageSize = val
+    dispatch('getList')
+  },
+  async 'setPageNumber' ({commit, dispatch, state}, val) {
+    state.listPageInfo.PageNumber = val
+    dispatch('getList')
+  },
+  async 'addMojiSetOne' ({commit, state}) {
+    const {
+      data
+    } = await api.get('moji/addOne', {
+      ...state.listPageInfo
+    }, true)
+    if (data.list && data.state === 'success') {
+    }
+  }
 }
 
 const getters = {
+  'list' (state) {
+    return state.list
+  },
+  'listPageInfo' (state) {
+    return state.listPageInfo
+  },
+  'addForm' (state) {
+    return state.addForm
+  },
+  'addRule' (state) {
+    return state.addRule
+  }
 }
 
 export default {

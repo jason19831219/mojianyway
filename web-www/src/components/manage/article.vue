@@ -19,12 +19,12 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="createDate"
         label="创建日期"
         width="150">
       </el-table-column>
       <el-table-column
-        prop="updateTime"
+        prop="updateDate"
         sortable
         label="更新时间"
         width="120">
