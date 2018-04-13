@@ -112,10 +112,7 @@ export default {
               if (result.data.state === 'success') {
                 this.$message({
                   message: '恭喜,添加成功！',
-                  type: 'success',
-                  onClose: () => {
-                    window.location = '/moji-admin'
-                  }
+                  type: 'success'
                 })
               } else {
                 this.$message({
