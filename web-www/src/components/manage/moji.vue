@@ -62,7 +62,7 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total=listInfo.totalCount>
     </el-pagination>
-    <el-dialog title="添加moji set" :visible.sync="addDialogVisable">
+    <el-dialog title="添加moji set" :visible.sync="DialogVisable">
       <el-form :model="addForm" :rules="addRule" ref="addForm">
         <el-input placeholder="请输入moji的名称" v-model="addForm.name"></el-input>
         <el-input placeholder="请输入moji的作者" v-model="addForm.author"></el-input>
@@ -74,7 +74,7 @@
         <div>{{addForm.src}}</div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisable = false">取 消</el-button>
+        <el-button @click="DialogVisable = false">取 消</el-button>
         <el-button type="primary" @click="saveMoji('mojiSetaddForm')">保存moji</el-button>
       </div>
     </el-dialog>
@@ -171,7 +171,7 @@ export default {
   },
   data () {
     return {
-      addDialogVisable: false
+      DialogVisable: false
     }
   },
   mounted () {

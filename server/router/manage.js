@@ -59,7 +59,6 @@ router.post("/uploads",authAdmin, (req, res, next) => {
 	try{
 		form.parse(req)
 			.on("field", function (name, field) {
-
 			})
 			.on("file", function (name, file) {
 				//console.log('Got file:', name);
