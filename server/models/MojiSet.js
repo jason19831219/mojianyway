@@ -5,7 +5,7 @@
 const mongoose = require("mongoose");
 const shortid = require("shortid");
 const moment = require("moment");
-
+var Moji = require("./Moji");
 var Schema = mongoose.Schema;
 
 var MojiSetSchema = new Schema({
@@ -34,6 +34,11 @@ var MojiSetSchema = new Schema({
 	updateDate: {
 		type: Date,
 		default: Date.now
+	},
+	mojis: {
+	    type: [],
+		default: [],
+		ref: "Moji"
 	},
 	comments: String
 });

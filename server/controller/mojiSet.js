@@ -48,6 +48,36 @@ class MojiSet {
         }
     }
 
+    async addMojiItem(req, res, next) {
+        var fields = req.body
+        var errmsg = service.checkFormData(fields);
+        if (errmsg != '') {
+            res.send({
+                state: 'error',
+                message: errmsg
+            })
+            return
+        }
+
+        const mojiSetObj = {
+            id: fields.id,
+            mojiItemId: fields.mojiItemId
+        }
+
+        try {
+            await MojiSetModel.findOneAndUpdate({_id: id},{ $push: { mojis: mojiSetObj.mojiItemId } });
+            res.send({
+                state: 'success'
+            });
+        } catch (err) {
+            res.send({
+                state: 'error',
+                message: '更新数据失败:',
+            })
+        }
+
+    }
+
     async getList(req, res, next) {
         console.log('sdfds')
         let pageNumber = req.query.pageNumber || 1;

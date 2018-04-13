@@ -38,10 +38,33 @@
       <el-table-column
         prop="avatar"
         label="avatar"
-        width="auto">
+        width="120">
         <template slot-scope="scope">
           <img :src="'http://127.0.0.1:8080'+scope.row.src" style="height: 100px">
         </template>
+      </el-table-column>
+      <el-table-column
+        prop="mojis"
+        label="mojis"
+        width="auto">
+        <template slot-scope="scope">
+          <span v-for="item in scope.row.mojis" :key="item.id">
+            <img :src="item.id" style="height: 100px">
+          </span>
+        </template>
+        <span class="moji-upload-btn">
+        <i id="avatar-uploader-icon" class="el-icon-plus"></i>
+        <el-select v-model="addMojiItem" placeholder="请选择">
+        <el-option
+      v-for="item in mojiList"
+      :key="item.id"
+      :label="item.name"
+      :value="item.src">
+      <span style="float: left">{{ item.id }}</span>
+      <img style="float: right; color: #8492a6; font-size: 13px" src="item.value">>
+    </el-option>
+  </el-select>
+      </span>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -88,7 +111,7 @@
 
 <script>
 import api from '@/api'
-import { mapGetters } from 'vuex'
+import {mapGetters} from 'vuex'
 
 export default {
   methods: {
@@ -136,14 +159,15 @@ export default {
       list: 'server/mojiSet/mojiSetList',
       listInfo: 'server/mojiSet/mojiSetListPageInfo',
       addForm: 'server/mojiSet/addForm',
-      mojiSetAddRule: 'server/mojiSet/mojiSetAddRule'
+      mojiSetAddRule: 'server/mojiSet/mojiSetAddRule',
+      mojiList: 'server/moji/list',
     })
   },
-  component: {
-  },
+  component: {},
   data () {
     return {
-      DialogVisable: false
+      DialogVisable: false,
+      addMojiItem: ''
     }
   },
   mounted () {
@@ -151,3 +175,44 @@ export default {
   }
 }
 </script>
+<style>
+  .moji-upload-btn {
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    position: relative;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    width: 240px;
+    height: 240px;
+    overflow: hidden;
+  }
+  .moji-upload-btn:hover,
+  .avatar-uploader-icon:hover {
+    border-color: #409EFF;
+  }
+
+  .moji-upload-btn img{
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  .moji-upload-btn input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+  }
+</style>
