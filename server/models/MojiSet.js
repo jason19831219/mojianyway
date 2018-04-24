@@ -37,7 +37,7 @@ var MojiSetSchema = new Schema({
 	},
 	mojis: {
 	    type: [],
-		default: [''],
+		default: [],
 		ref: "Moji"
 	},
 	comments: String
