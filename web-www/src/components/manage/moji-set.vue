@@ -239,7 +239,7 @@ export default {
     color: #8c939d;
     width: 100%;
     height: 100%;
-    line-height: 100px;
+    line-height: 100px!important;
     text-align: center;
   }
 
