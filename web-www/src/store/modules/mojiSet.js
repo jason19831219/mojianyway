@@ -44,8 +44,16 @@ const mutations = {
     pageInfo
   }) {
     state.mojiSetList = list
+    state.mojiSetList.forEach(function (value, key) {
+      value.mojis.push('')
+      var mojisList = value.mojis
+      value.mojis.forEach(function (value, key) {
+        mojisList[key] = {old: value, new: value}
+      })
+    })
+
+    console.log(JSON.stringify(state.mojiSetList))
     state.mojiSetListPageInfo = pageInfo
-    console.log(state.mojiSetList)
   }
 }
 
@@ -54,7 +62,6 @@ const actions = {
     commit,
     state
   }) {
-    console.log(state.mojiSetListPageInfo.pageSize)
     const {
       data
     } = await api.get('mojiSet/getList', {

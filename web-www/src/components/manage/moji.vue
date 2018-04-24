@@ -36,7 +36,7 @@
         label="图片地址"
         width="600">
         <template slot-scope="scope">
-          <img :src="'http://127.0.0.1:8080'+scope.row.src" style="height: 100px">
+          <img :src="scope.row.src" style="height: 100px">
         </template>
       </el-table-column>
       <el-table-column
@@ -60,7 +60,7 @@
       :page-sizes="[10,20,50,100]"
       :page-size=listInfo.pageSize
       layout="total, sizes, prev, pager, next, jumper"
-      :total=listInfo.totalCount>
+      :total=listInfo.totalItems>
     </el-pagination>
     <el-dialog title="添加moji set" :visible.sync="DialogVisable">
       <el-form :model="addForm" :rules="addRule" ref="addForm">

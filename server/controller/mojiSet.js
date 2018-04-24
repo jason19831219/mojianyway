@@ -48,7 +48,7 @@ class MojiSet {
         }
     }
 
-    async addMojiItem(req, res, next) {
+    async updateMojiItem(req, res, next) {
         var fields = req.body
         var errmsg = service.checkFormData(fields);
         if (errmsg != '') {
@@ -58,17 +58,34 @@ class MojiSet {
             })
             return
         }
-
-        const mojiSetObj = {
-            id: fields.id,
-            mojiItemId: fields.mojiItemId
-        }
+        var update = {};
 
         try {
-            await MojiSetModel.findOneAndUpdate({_id: id},{ $push: { mojis: mojiSetObj.mojiItemId } });
+
+            if (fields.newMojiItemId) {
+                update = {};
+                Object.assign(update, {
+                    $push: {
+                        mojis: fields.newMojiItemId
+                    }
+                })
+                await MojiSetModel.findOneAndUpdate({_id: fields.mojiSeIid}, update);
+            }
+
+
+            // if (fields.oldMojiItemId) {
+                update = {};
+                Object.assign(update, {
+                    $pull: {
+                        mojis: fields.oldMojiItemId
+                    }
+                })
+                await MojiSetModel.findOneAndUpdate({_id: fields.mojiSeIid}, update);
+            // }
             res.send({
                 state: 'success'
             });
+
         } catch (err) {
             res.send({
                 state: 'error',

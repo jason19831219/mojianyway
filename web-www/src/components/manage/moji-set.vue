@@ -39,32 +39,34 @@
         prop="avatar"
         label="avatar"
         width="120">
-        <template slot-scope="scope">
-          <img :src="'http://127.0.0.1:8080'+scope.row.src" style="height: 100px">
-        </template>
       </el-table-column>
       <el-table-column
-        prop="mojis"
         label="mojis"
         width="auto">
         <template slot-scope="scope">
-          <span v-for="item in scope.row.mojis" :key="item.id">
-            <img :src="item.id" style="height: 100px">
+          <span class="moji-selection-btn" v-for="(item, index) in scope.row.mojis" :key="index">
+            <i class="el-icon-plus avatar-uploader-icon"></i>
+            <img v-if="mojiSrcItem.id === item.old" v-for="mojiSrcItem in mojiList" :key="mojiSrcItem.id"  :src="mojiSrcItem.src">
+            <el-select v-model="item.new" @change="mojiChanged(scope.row._id, item.new, item.old)">
+              <el-option
+                :value="''"
+                style="height: 100px;width: 300px; margin-bottom: 30px;">
+                <span style="text-align: center; height: 100px;line-height: 100px!important;">删除</span>
+              </el-option>
+              <el-option
+                v-for="item in mojiList"
+                :key="item.id"
+                :label="item.id"
+                :value="item.id"
+                style="height: 100px;width: 300px; margin-bottom: 30px;">
+                <span style="float: left; height: 100px;line-height: 100px!important;">{{ item.id }}</span>
+                <span style="float: right; height: 100px;">
+                  <img :src="item.src" style="height: 100px;">
+                </span>
+              </el-option>
+            </el-select>
           </span>
         </template>
-        <span class="moji-upload-btn">
-        <i id="avatar-uploader-icon" class="el-icon-plus"></i>
-        <el-select v-model="addMojiItem" placeholder="请选择">
-        <el-option
-      v-for="item in mojiList"
-      :key="item.id"
-      :label="item.name"
-      :value="item.src">
-      <span style="float: left">{{ item.id }}</span>
-      <img style="float: right; color: #8492a6; font-size: 13px" src="item.value">>
-    </el-option>
-  </el-select>
-      </span>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -152,6 +154,31 @@ export default {
           return false
         }
       })
+    },
+    mojiChanged (mojiSetId, newMojiItemId, oldMojiItemId) {
+      let params = {
+        'mojiSeIid': mojiSetId,
+        'oldMojiItemId': oldMojiItemId || '',
+        'newMojiItemId': newMojiItemId || ''
+      }
+      api
+        .post('mojiSet/updateMojiItem', params, true)
+        .then(result => {
+          if (result.data.state === 'success') {
+            this.$message({
+              message: '恭喜,添加成功！',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: result.data.message,
+              type: 'error'
+            })
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.error)
+        })
     }
   },
   computed: {
@@ -160,23 +187,42 @@ export default {
       listInfo: 'server/mojiSet/mojiSetListPageInfo',
       addForm: 'server/mojiSet/addForm',
       mojiSetAddRule: 'server/mojiSet/mojiSetAddRule',
-      mojiList: 'server/moji/list',
+      mojiList: 'server/moji/list'
     })
   },
   component: {},
   data () {
     return {
       DialogVisable: false,
-      addMojiItem: ''
+      addMojiItem: '',
+      newMojiItemId: '',
+      options: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }, {
+        value: '选项4',
+        label: '龙须面'
+      }, {
+        value: '选项5',
+        label: '北京烤鸭'
+      }],
+      value: ''
     }
   },
   mounted () {
     this.$store.dispatch('server/mojiSet/getMojiSetList')
+    this.$store.dispatch('server/moji/getAll')
   }
 }
 </script>
 <style>
-  .moji-upload-btn {
+  .moji-selection-btn {
     cursor: pointer;
     display: inline-block;
     text-align: center;
@@ -184,16 +230,25 @@ export default {
     position: relative;
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
-    width: 240px;
-    height: 240px;
+    width: 100px;
+    height: 100px;
     overflow: hidden;
   }
-  .moji-upload-btn:hover,
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 100%;
+    height: 100%;
+    line-height: 100px;
+    text-align: center;
+  }
+
+  .moji-selection-btn:hover,
   .avatar-uploader-icon:hover {
     border-color: #409EFF;
   }
 
-  .moji-upload-btn img{
+  .moji-selection-btn img {
     position: absolute;
     top: 0;
     right: 0;
@@ -201,15 +256,13 @@ export default {
     min-height: 100%;
   }
 
-  .moji-upload-btn input[type=file] {
+  .moji-selection-btn .el-select {
     position: absolute;
     top: 0;
     right: 0;
     min-width: 100%;
     min-height: 100%;
     font-size: 100px;
-    text-align: right;
-    filter: alpha(opacity=0);
     opacity: 0;
     outline: none;
     background: white;

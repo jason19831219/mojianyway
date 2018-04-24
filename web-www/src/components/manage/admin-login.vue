@@ -9,7 +9,7 @@
           <div class="login-box">
             <el-form label-position="top" :model="adminLoginForm" :rules="adminLoginRule" ref="adminLoginForm" label-width="0px" class="demo-ruleForm login-container">
               <h3 class="title">
-                <span>注册</span>
+                <span>登录</span>
               </h3>
               <el-form-item prop="userName" label="用户名">
                 <el-input placeholder="请填写用户名" v-model="adminLoginForm.userName"></el-input>

@@ -49,6 +49,7 @@ const mutations = {
     list,
     pageInfo
   }) {
+    console.log('mojilist' + JSON.stringify(list))
     state.list = list
     state.listPageInfo = pageInfo
   }
@@ -69,11 +70,11 @@ const actions = {
   },
   async 'setPageSize' ({commit, dispatch, state}, val) {
     state.listPageInfo.pageSize = val
-    dispatch('getList')
+    dispatch('getAll')
   },
   async 'setPageNumber' ({commit, dispatch, state}, val) {
     state.listPageInfo.PageNumber = val
-    dispatch('getList')
+    dispatch('getAll')
   },
   async 'addMojiSetOne' ({commit, state}) {
     const {
