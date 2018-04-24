@@ -73,7 +73,7 @@ class MojiSet {
             }
 
 
-            // if (fields.oldMojiItemId) {
+            if (fields.oldMojiItemId) {
                 update = {};
                 Object.assign(update, {
                     $pull: {
@@ -81,7 +81,7 @@ class MojiSet {
                     }
                 })
                 await MojiSetModel.findOneAndUpdate({_id: fields.mojiSeIid}, update);
-            // }
+            }
             res.send({
                 state: 'success'
             });
