@@ -301,7 +301,8 @@ class Article {
             title: fields.title,
             author: fields.author,
             authorAvatarSrc: fields.authorAvatarSrc,
-            imgSrc: fields.imgSrc
+            imgSrc: fields.imgSrc,
+            fromSite: fields.fromSite
         }
 
         try {
