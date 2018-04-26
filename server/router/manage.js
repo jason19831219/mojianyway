@@ -68,15 +68,18 @@ router.post("/uploads",authAdmin, (req, res, next) => {
 				if (fileType == "images") {
 					if (realFileType.fileType == "jpg" || realFileType.fileType == "jpeg" || realFileType.fileType == "png" || realFileType.fileType == "gif") {
 						fs.rename(file.path, uploadPath + newFileName, function () {
-							res.send(
-								{
-									state: "success",
-									message: "上传成功!",
-									info:
-										{
-											path: "/"+uploadPath + newFileName
-										}
-								});
+							setTimeout(function () {
+								res.send(
+									{
+										state: "success",
+										message: "上传成功!",
+										info:
+                                            {
+                                            	path: "/"+uploadPath + newFileName
+                                            }
+									});
+							},100);
+
 						});
 
 					}
