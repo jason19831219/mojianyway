@@ -135,6 +135,7 @@ let systemService = {
 
     checkFormData: function (fields) {
         let errMsg = '';
+        console.log(fields.imgSrc+'sf');
         if (fields.userName && !validatorUtil.checkUserName(fields.userName)) {
             errMsg = '5-12个英文字符!';
         }
@@ -144,14 +145,10 @@ let systemService = {
         if (fields.price && !validatorUtil.checkCurrency(fields.price)) {
             errMsg = '只能数组，且2位小数';
         }
-        if (fields.imgSrc && fields.imgSrc === '') {
-            errMsg = '图片路径错误';
-        }
         if (fields.passwordConfirmed && fields.password && fields.password !== fields.passwordConfirmed) {
             errMsg = '两次输入密码不一致!';
         }
         if (fields.mobile && !validatorUtil.checkMobile(fields.mobile)) {
-            console.log(fields.mobile)
             errMsg = '请填写正确的手机号码!';
         }
         return errMsg

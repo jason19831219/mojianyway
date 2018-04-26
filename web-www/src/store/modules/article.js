@@ -38,6 +38,12 @@ const state = () => ({
     imgSrc: [
       {
         required: true,
+        validator: (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error('图片'))
+          }
+          callback()
+        },
         trigger: 'blur'
       }
     ],
@@ -83,6 +89,21 @@ const actions = {
         message: '保存成功',
         type: 'success'
       })
+    }else{
+      Message({
+        message: data.message,
+        type: 'error'
+      })
+    }
+  },
+  async 'resetForm' ({commit, state}) {
+    state.itemForm = {
+      title: '',
+      desc: '',
+      author: '',
+      authorAvatarSrc: '',
+      imgSrc: '',
+      fromSite: ''
     }
   }
 }

@@ -6,6 +6,17 @@ const _ = require('lodash');
 const schedule = require('node-schedule');
 const chinaTime = require('china-time');
 
+function checkFormData(fields) {
+    let errMsg = '';
+    if (!fields.title ) {
+        errMsg = '没有title';
+    }
+    if (!fields.imgSrc) {
+        errMsg = '没有图片';
+    }
+    return errMsg;
+}
+
 class Article {
 
 
@@ -234,11 +245,11 @@ class Article {
         let targetId = req.body.articleId;
         try {
             var articleObj = {}
-            if(req.body.sticky||!req.body.sticky){
+            if (req.body.sticky || !req.body.sticky) {
                 articleObj.sticky = req.body.sticky
             }
 
-            await ArticleModel.findOneAndUpdate({ _id: targetId }, { $set: articleObj });
+            await ArticleModel.findOneAndUpdate({_id: targetId}, {$set: articleObj});
             res.send({
                 state: 'success'
             });
@@ -287,8 +298,8 @@ class Article {
     }
 
     async addOne(req, res) {
-        var fields = req.body
-        var errmsg = service.checkFormData(fields);
+        var fields = req.body;
+        var errmsg = checkFormData(fields);
         if (errmsg != '') {
             res.send({
                 state: 'error',
@@ -299,7 +310,7 @@ class Article {
 
         const articleObj = {
             title: fields.title,
-            author: fields.author,
+            author: [fields.author],
             authorAvatarSrc: fields.authorAvatarSrc,
             imgSrc: fields.imgSrc,
             fromSite: fields.fromSite

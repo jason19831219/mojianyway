@@ -13,12 +13,30 @@ var ArticleSchema = new Schema({
 		type: String,
 		"default": shortid.generate
 	},
-	detailLink: {type: String, default: "/"},
-	imgSrc: {type: [[]], default: []},
-	title: String,
-	author: [{ type: String, default: [] }],
-	authorAvatarSrc: {type: String, default: "/"},
-	description: String,
+	detailLink: {
+		type: String,
+		default: "/"
+	},
+	imgSrc: {
+		type: [[]],
+        require: true
+	},
+	title: {
+		type: String,
+		require: true
+	},
+	author: {
+		type: [],
+		default: []
+	},
+	authorAvatarSrc: {
+		type: String,
+        default: ""
+	},
+	description: {
+		type: String,
+		default: ""
+	},
 	fromSite: {
 		type: String,
 		default: ""

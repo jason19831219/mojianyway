@@ -130,9 +130,7 @@ export default {
     },
     showItemFrom (formName) {
       this.DialogVisable = true
-      if (this.$refs[formName] !== undefined) {
-        this.$refs[formName].resetFields()
-      }
+      this.$store.dispatch('server/article/resetForm')
     },
     handleAvatarSuccess (res, file) {
       this.itemForm.authorAvatarSrc = res.info.path
