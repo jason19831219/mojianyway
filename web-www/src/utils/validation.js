@@ -1,4 +1,4 @@
-import validator from 'validator'
+const validator = require('validator')
 // const shortid = require('shortid');
 
 export default {
@@ -33,6 +33,9 @@ export default {
   },
   checkSmsCode (str) {
     return str && validator.isNumeric(str.toString(), 'zh-CN') && validator.isLength(str, 6, 6)
+  },
+  checkCurrency (str) {
+    return str && validator.isCurrency(str.toString())
   },
   // 校验QQ号
   checkQqNum (str) {

@@ -211,6 +211,6 @@ router.post("/users/mobileCheck",User.mobileCheck);
 router.post("/users/getAuth",User.getAuth);
 
 
-router.get("/article/getList",authToken, Article.getArticles);
+router.get("/article/getAll",authToken, Article.getAll);
 
 module.exports = router;

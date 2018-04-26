@@ -34,6 +34,9 @@ module.exports = {
 	checkMobile(str) {
 		return str && validator.isMobilePhone(str.toString(), "zh-CN");
 	},
+	checkCurrency(str) {
+		return str && validator.isCurrency(str.toString());
+	},
 	// 校验QQ号
 	checkQqNum(str) {
 		return RegExp(/^[1-9][0-9]{4,9}$/).test(str);

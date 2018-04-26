@@ -20,14 +20,19 @@
         width="120">
       </el-table-column>
       <el-table-column
-        prop="createDate"
-        label="创建日期"
-        width="150">
-      </el-table-column>
-      <el-table-column
         prop="author"
         label="作者"
         width="120">
+      </el-table-column>
+      <el-table-column
+        prop="price"
+        label="单价"
+        width="120">
+      </el-table-column>
+      <el-table-column
+        prop="createDate"
+        label="创建日期"
+        width="150">
       </el-table-column>
       <el-table-column
         prop="updateDate"
@@ -101,6 +106,9 @@
         </el-form-item>
         <el-form-item label="MojiSetAuthor" prop="author">
           <el-input v-model="addForm.author" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="MojiSetPrice" prop="price">
+          <el-input v-model="addForm.price" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

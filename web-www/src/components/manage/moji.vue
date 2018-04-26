@@ -125,7 +125,7 @@ export default {
               message: response.data.message,
               type: 'success'
             })
-            this.addForm.src = '/' + response.data.info.path
+            this.addForm.src = response.data.info.path
           } else {
             this.$message({
               message: response.data.message,

@@ -44,8 +44,10 @@ var MojiSchema = new Schema({
 		type: Date,
 		default: Date.now
 	} // 更新时间
+}, {
+	versionKey: false,
+	timestamps: {createdAt: "createDate", updatedAt: "updateDate"}
 });
-
 
 MojiSchema.set("toJSON", { getters: true, virtuals: true });
 MojiSchema.set("toObject", { getters: true, virtuals: true });

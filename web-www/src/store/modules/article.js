@@ -1,5 +1,12 @@
 import api from '@/api'
+import { Message } from 'element-ui'
+// import validatorUtil from '@/utils/validation'
 const state = () => ({
+  msg: {
+    type: 'success',
+    content: '',
+    count: 0
+  },
   list: [],
   listPageInfo: {
     pageNumber: 1,
@@ -7,14 +14,16 @@ const state = () => ({
     totalItems: 0,
     nameReg: ''
   },
-  addForm: {
-    src: '',
-    name: '',
+  itemForm: {
+    title: '',
     desc: '',
-    author: ''
+    author: '',
+    authorAvatarSrc: '',
+    imgSrc: '',
+    fromSite: ''
   },
-  addRule: {
-    name: [
+  itemFormRule: {
+    title: [
       {
         required: true,
         validator: (rule, value, callback) => {
@@ -26,8 +35,9 @@ const state = () => ({
         trigger: 'blur'
       }
     ],
-    src: [
+    imgSrc: [
       {
+        required: true,
         trigger: 'blur'
       }
     ],
@@ -45,10 +55,7 @@ const state = () => ({
 })
 
 const mutations = {
-  'receiveList' (state, {
-    list,
-    pageInfo
-  }) {
+  'receiveList' (state, {list, pageInfo}) {
     state.list = list
     state.listPageInfo = pageInfo
   }
@@ -56,15 +63,9 @@ const mutations = {
 
 const actions = {
   async 'getAll' ({commit, state}) {
-    const {
-      data
-    } = await api.get('moji/getAll', {
-      ...state.listPageInfo
-    }, true)
+    const {data} = await api.get('article/getAll', {...state.listPageInfo}, true)
     if (data.list && data.state === 'success') {
-      commit('receiveList', {
-        ...data
-      })
+      commit('receiveList', {...data})
     }
   },
   async 'setPageSize' ({commit, dispatch, state}, val) {
@@ -72,16 +73,16 @@ const actions = {
     dispatch('getAll')
   },
   async 'setPageNumber' ({commit, dispatch, state}, val) {
-    state.listPageInfo.PageNumber = val
+    state.listPageInfo.pageNumber = val
     dispatch('getAll')
   },
-  async 'addMojiSetOne' ({commit, state}) {
-    const {
-      data
-    } = await api.get('moji/addOne', {
-      ...state.listPageInfo
-    }, true)
-    if (data.list && data.state === 'success') {
+  async 'addOne' ({commit, state}) {
+    const {data} = await api.post('article/addOne', {...state.itemForm}, true)
+    if (data.state === 'success') {
+      Message({
+        message: '保存成功',
+        type: 'success'
+      })
     }
   }
 }
@@ -93,11 +94,11 @@ const getters = {
   'listPageInfo' (state) {
     return state.listPageInfo
   },
-  'addForm' (state) {
-    return state.addForm
+  'itemForm' (state) {
+    return state.itemForm
   },
-  'addRule' (state) {
-    return state.addRule
+  'itemFormRule' (state) {
+    return state.itemFormRule
   }
 }
 

@@ -45,6 +45,9 @@ var AdminSchema = new Schema({
 		type: String,
 		ref: "AdminGroup"
 	}
+}, {
+	versionKey: false,
+	timestamps: {createdAt: "createDate", updatedAt: "updateDate"}
 });
 
 

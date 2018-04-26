@@ -29,9 +29,9 @@ router.post("/admin/login", Admin.login);
 router.post("/admin/logOut", Admin.logOut);
 
 
-router.get("/article/getList", authAdmin, Article.getArticles);
+router.get("/article/getAll", authAdmin, Article.getAll);
 
-router.post("/article/updateArticle",authAdmin, Article.updateArticle);
+router.post("/article/addOne",authAdmin, Article.addOne);
 
 router.post("/moji/addOne",authAdmin, Moji.addOne);
 router.get("/moji/getAll",authAdmin, Moji.getAll);
@@ -52,37 +52,18 @@ router.post("/uploads",authAdmin, (req, res, next) => {
 	let newFileName = "";
 	form.uploadDir = uploadPath;
 	form.maxFileSize = settings.size_moji_upload;
-	// form.multiples = false;
-
-
-	//存放目录
 
 	try{
 		form.parse(req)
-			.on("field", function (name, field) {
-			})
 			.on("file", function (name, file) {
-				//console.log('Got file:', name);
-
-				// specify that we want to allow the user to upload multiple files in a single request
-				//form.multiples = true;
-
-				// store all uploads in the /uploads directory
-
 				let realFileType = service.getFileMimeType(file.path);
 				let typeKey = "others";
 				let thisType = file.name.split(".")[1];
 				let ms = moment(new Date()).format("YYYYMMDDHHmmss").toString();
-
-
-
-
 				if (fileType == "images") {
 					typeKey = "img";
 				}
 				newFileName = typeKey + ms + "." + thisType;
-
-				console.log(newFileName+"newFileName");
 
 				if (fileType == "images") {
 					if (realFileType.fileType == "jpg" || realFileType.fileType == "jpeg" || realFileType.fileType == "png" || realFileType.fileType == "gif") {
@@ -92,9 +73,9 @@ router.post("/uploads",authAdmin, (req, res, next) => {
 									state: "success",
 									message: "上传成功!",
 									info:
-                    {
-                    	path: uploadPath + newFileName
-                    }
+										{
+											path: "/"+uploadPath + newFileName
+										}
 								});
 						});
 
@@ -113,7 +94,7 @@ router.post("/uploads",authAdmin, (req, res, next) => {
 	}catch (e) {
 		res.send({
 			state: "error",
-			massage: err.toString()
+			massage: e.toString()
 		});
 	}
 

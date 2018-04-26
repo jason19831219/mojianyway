@@ -24,14 +24,4 @@ module.exports = [{
       componentName: 'article'
     }
   ]
-// }, {
-//   name: 'Form',
-//   id: 'form',
-//   sub: [{
-//     name: 'Radio 单选框',
-//     componentName: 'FormRadio'
-//   }, {
-//     name: 'Checkbox 多选框',
-//     componentName: 'FormCheckbox'
-//   }]
 }]

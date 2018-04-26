@@ -1,4 +1,5 @@
 import api from '@/api'
+import validatorUtil from '@/utils/validation'
 const state = () => ({
   mojiSetList: [],
   mojiSetListPageInfo: {
@@ -10,7 +11,8 @@ const state = () => ({
   addForm: {
     name: '',
     desc: '',
-    author: ''
+    author: '',
+    price: 0.00
   },
   mojiSetAddRule: {
     name: [
@@ -32,6 +34,17 @@ const state = () => ({
     ],
     desc: [
       {
+        trigger: 'blur'
+      }
+    ],
+    price: [
+      {
+        validator: (rule, value, callback) => {
+          if (!validatorUtil.checkCurrency(value)) {
+            callback(new Error('只能输如数字，且2位小数'))
+          }
+          callback()
+        },
         trigger: 'blur'
       }
     ]
@@ -86,7 +99,7 @@ const actions = {
     dispatch,
     state
   }, val) {
-    state.mojiSetListPageInfo.setPageNumber = val
+    state.mojiSetListPageInfo.pageNumber = val
     dispatch('getMojiSetList')
   },
   async 'addMojiSetOne' ({

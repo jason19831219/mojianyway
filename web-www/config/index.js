@@ -18,6 +18,13 @@ module.exports = {
           "^/manage": "/manage"
         }
       },
+      '/public': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        pathRewrite: {
+          "^/public": "/public"
+        }
+      },
       '/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,

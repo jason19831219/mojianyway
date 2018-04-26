@@ -163,7 +163,7 @@ class Article {
                     }
 
                     var title = $(titleDomPath).text();
-                    var avatar = $(avatarDomPath).attr('src');
+                    var authorAvatarSrc = $(avatarDomPath).attr('src');
                     var description = $(descriptionDomPath).text();
 
 
@@ -171,7 +171,7 @@ class Article {
                     var updates = {
                         title: title,
                         author: author,
-                        avatar: avatar,
+                        authorAvatarSrc: authorAvatarSrc,
                         description: description,
                         imgSrc: imageSrc
                     };
@@ -230,7 +230,7 @@ class Article {
         })
     }
 
-    async updateArticle(req, res, next) {
+    async updateOne(req, res, next) {
         let targetId = req.body.articleId;
         try {
             var articleObj = {}
@@ -252,7 +252,7 @@ class Article {
         }
     }
 
-    async getArticles(req, res, next) {
+    async getAll(req, res, next) {
         let pageNumber = req.query.pageNumber || 1;
         let pageSize = req.query.pageSize || 10;
         let searchkey = req.query.searchkey;
@@ -276,7 +276,7 @@ class Article {
         const totalItems = await ArticleModel.count(queryObj);
         res.send({
             state: 'success',
-            docs: articles,
+            list: articles,
             pageInfo: {
                 totalItems,
                 pageNumber: Number(pageNumber) || 1,
@@ -284,6 +284,47 @@ class Article {
                 searchkey: searchkey || ''
             }
         })
+    }
+
+    async addOne(req, res) {
+        var fields = req.body
+        var errmsg = service.checkFormData(fields);
+        if (errmsg != '') {
+            res.send({
+                state: 'error',
+                message: errmsg
+            })
+            return
+        }
+
+        const articleObj = {
+            title: fields.title,
+            author: fields.author,
+            authorAvatarSrc: fields.authorAvatarSrc,
+            imgSrc: fields.imgSrc
+        }
+
+        try {
+            let article = await ArticleModel.find({title: fields.title})
+            if (!_.isEmpty(article)) {
+                res.send({
+                    state: 'error',
+                    message: '名字已存在！'
+                });
+            } else {
+                const newMojiSet = new ArticleModel(articleObj);
+                await newMojiSet.save();
+                res.send({
+                    state: 'success',
+                    id: '图片已保存'
+                });
+            }
+        } catch (err) {
+            res.send({
+                state: 'error',
+                message: '保存数据失败:',
+            })
+        }
     }
 
 

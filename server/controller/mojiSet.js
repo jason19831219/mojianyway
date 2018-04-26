@@ -22,7 +22,9 @@ class MojiSet {
 
         const mojiSetObj = {
             name: fields.name,
-            desc: fields.desc
+            desc: fields.desc,
+            author: fields.author,
+            price: fields.price
         }
 
         try {

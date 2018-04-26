@@ -141,6 +141,12 @@ let systemService = {
         if (fields.password && !validatorUtil.checkPwd(fields.password)) {
             errMsg = '6-12位，只能包含字母、数字和下划线!';
         }
+        if (fields.price && !validatorUtil.checkCurrency(fields.price)) {
+            errMsg = '只能数组，且2位小数';
+        }
+        if (fields.imgSrc && fields.imgSrc === '') {
+            errMsg = '图片路径错误';
+        }
         if (fields.passwordConfirmed && fields.password && fields.password !== fields.passwordConfirmed) {
             errMsg = '两次输入密码不一致!';
         }
