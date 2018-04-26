@@ -271,7 +271,7 @@ class Article {
         }
         queryObj.imgSrc = {$ne: []}
         const articles = await ArticleModel.find(queryObj).sort({
-            updateTime: -1
+            updateDate: -1
         }).skip(Number(pageSize) * (Number(pageNumber) - 1)).limit(Number(pageSize)).exec();
         const totalItems = await ArticleModel.count(queryObj);
         res.send({
