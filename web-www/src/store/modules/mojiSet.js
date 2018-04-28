@@ -64,8 +64,6 @@ const mutations = {
         mojisList[key] = {old: value, new: value}
       })
     })
-
-    console.log(JSON.stringify(state.mojiSetList))
     state.mojiSetListPageInfo = pageInfo
   }
 }
