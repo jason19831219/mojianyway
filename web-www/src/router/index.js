@@ -24,8 +24,6 @@ menus.forEach((item) => {
   })
 })
 
-console.log(manageSubRouters)
-
 var routes = [
   // {
   //   path: '/',
@@ -54,8 +52,6 @@ var routes = [
     children: manageSubRouters
   }
 ]
-
-console.log(routes)
 
 export default new Router({
   mode: 'history',
