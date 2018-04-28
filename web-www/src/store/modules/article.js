@@ -19,7 +19,7 @@ const state = () => ({
     desc: '',
     author: '',
     authorAvatarSrc: '',
-    imgSrc: '',
+    imgSrc: [[]],
     fromSite: ''
   },
   itemFormRule: {
@@ -38,12 +38,6 @@ const state = () => ({
     imgSrc: [
       {
         required: true,
-        validator: (rule, value, callback) => {
-          if (value === '') {
-            callback(new Error('图片'))
-          }
-          callback()
-        },
         trigger: 'blur'
       }
     ],
@@ -63,7 +57,19 @@ const state = () => ({
 const mutations = {
   'receiveList' (state, {list, pageInfo}) {
     state.list = list
+    state.list.forEach(function (value) {
+      value.imgSrc.forEach(function (value, index, array) {
+        array[index] = [(value[0].split(' '))[0]]
+      })
+    })
+    console.log(state.list)
     state.listPageInfo = pageInfo
+  },
+  'HandleImageSuccess' (state, {index, path}) {
+    if (!state.itemForm.imgSrc[index][0]) {
+      state.itemForm.imgSrc.push([''])
+    }
+    state.itemForm.imgSrc.splice(index, 1, [path])
   }
 }
 
@@ -83,13 +89,14 @@ const actions = {
     dispatch('getAll')
   },
   async 'addOne' ({commit, state}) {
+    state.itemForm.imgSrc.pop()
     const {data} = await api.post('article/addOne', {...state.itemForm}, true)
     if (data.state === 'success') {
       Message({
         message: '保存成功',
         type: 'success'
       })
-    }else{
+    } else {
       Message({
         message: data.message,
         type: 'error'
@@ -102,9 +109,38 @@ const actions = {
       desc: '',
       author: '',
       authorAvatarSrc: '',
-      imgSrc: '',
+      imgSrc: [['']],
       fromSite: ''
     }
+  },
+  async 'updateOne' ({commit, state}) {
+    console.log(state.itemForm.imgSrc)
+    state.itemForm.imgSrc.forEach(function (value, index) {
+      if (!value[0]) {
+        console.log(index)
+        state.itemForm.imgSrc.splice(index, 1)
+      }
+    })
+    const {data} = await api.post('article/updateOne', {...state.itemForm}, true)
+    if (data.state === 'success') {
+      Message({
+        message: '更新成功',
+        type: 'success'
+      })
+    } else {
+      Message({
+        message: data.message,
+        type: 'error'
+      })
+    }
+  },
+  async 'setForm' ({commit, state}, index) {
+    state.itemForm = state.list[index]
+    state.itemForm.author.replace(/\n/g, '').replace(/(^\s*)|(\s*$)/g, '')
+    state.itemForm.imgSrc.push([])
+  },
+  async 'handleImageSuccess' ({commit, state}, data) {
+    commit('HandleImageSuccess', {...data})
   }
 }
 

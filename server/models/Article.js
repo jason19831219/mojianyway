@@ -26,8 +26,8 @@ var ArticleSchema = new Schema({
 		require: true
 	},
 	author: {
-		type: [],
-		default: []
+		type: String,
+		default: ""
 	},
 	authorAvatarSrc: {
 		type: String,

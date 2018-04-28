@@ -36,7 +36,6 @@ class Article {
         } else {
             path = item.site_path
         }
-        console.log(path + chinaTime('DD HH'))
 
         var options = {
             method: 'GET',
@@ -115,7 +114,7 @@ class Article {
 
     async getArticleDetailBG(articleObj) {
 
-        console.log(articleObj.detailLink)
+
         var options = {
             method: 'GET',
             hostname: articleObj.fromSite,
@@ -151,25 +150,23 @@ class Article {
                                     imgPathArray.push(imageSrcArray[i]);
                                 }
                             }
-                            console.log(imgPathArray)
                             imageSrc.push(imgPathArray)
                         }
                     });
-                    console.log(imageSrc)
                     if (!imageSrc.length) {
                         imageSrc.push($(imageDomSinglePath).attr('src'));
                     }
 
-                    var author = [];
+                    var author = '';
                     $(authorDomPath).each((i, obj) => {
                         var authorName = $(obj).text();
-                        author.push(authorName);
+                        author = author + authorName.replace(/\n/g, '').replace(/(^\s*)|(\s*$)/g, '') + ',';
                     });
 
-                    if (!author.length) {
+                    if (!author) {
                         $(authorDomMultiPath).each((i, obj) => {
                             var authorName = $(obj).text();
-                            author.push(authorName);
+                            author = author + authorName.replace(/\n/g, '').replace(/(^\s*)|(\s*$)/g, '')+ ',';
                         });
                     }
 
@@ -212,9 +209,7 @@ class Article {
     async getArticlesBG() {
         schedule.scheduleJob(settings.spider_time_create_cron, async function () {
             global.articleSpiderArrayBehance = await service.getBehanceSpiderArray();
-            console.log(global.articleSpiderArrayBehance)
         });
-        //
         var spiderRule = new schedule.RecurrenceRule();
         spiderRule.hour = settings.spider_time;
         spiderRule.minute = 0;
@@ -237,28 +232,39 @@ class Article {
                         console.log(err)
                     });
             }
-            console.log(chinaTime('HH:MM:SS'))
         })
     }
 
     async updateOne(req, res, next) {
-        let targetId = req.body.articleId;
-        try {
-            var articleObj = {}
-            if (req.body.sticky || !req.body.sticky) {
-                articleObj.sticky = req.body.sticky
-            }
-
-            await ArticleModel.findOneAndUpdate({_id: targetId}, {$set: articleObj});
-            res.send({
-                state: 'success'
-            });
-
-        } catch (error) {
+        var fields = req.body;
+        var errmsg = checkFormData(fields);
+        if (errmsg != '') {
             res.send({
                 state: 'error',
-                type: 'ERROR_IN_SAVE_DATA',
-                message: '更新数据失败:' + error,
+                message: errmsg
+            })
+            return
+        }
+
+        const articleObj = {
+            title: fields.title,
+            author: fields.author,
+            authorAvatarSrc: fields.authorAvatarSrc,
+            imgSrc: fields.imgSrc,
+            fromSite: fields.fromSite,
+            sticky: fields.sticky
+        }
+
+        try {
+            await ArticleModel.findOneAndUpdate({ _id: fields.id }, { $set: articleObj });
+            res.send({
+                state: 'success',
+                message: '更新成功',
+            });
+        } catch (err) {
+            res.send({
+                state: 'error',
+                message: '更新失败:',
             })
         }
     }
@@ -313,7 +319,8 @@ class Article {
             author: [fields.author],
             authorAvatarSrc: fields.authorAvatarSrc,
             imgSrc: fields.imgSrc,
-            fromSite: fields.fromSite
+            fromSite: fields.fromSite,
+            sticky: fields.sticky
         }
 
         try {
@@ -324,8 +331,8 @@ class Article {
                     message: '名字已存在！'
                 });
             } else {
-                const newMojiSet = new ArticleModel(articleObj);
-                await newMojiSet.save();
+                const newArticle = new ArticleModel(articleObj);
+                await newArticle.save();
                 res.send({
                     state: 'success',
                     id: '图片已保存'

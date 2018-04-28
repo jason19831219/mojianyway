@@ -30,8 +30,8 @@ router.post("/admin/logOut", Admin.logOut);
 
 
 router.get("/article/getAll", authAdmin, Article.getAll);
-
 router.post("/article/addOne",authAdmin, Article.addOne);
+router.post("/article/updateOne",authAdmin, Article.updateOne);
 
 router.post("/moji/addOne",authAdmin, Moji.addOne);
 router.get("/moji/getAll",authAdmin, Moji.getAll);
