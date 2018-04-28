@@ -211,7 +211,7 @@ class Article {
         spiderRule.minute = 0;
         spiderRule.second = 0;
         //
-        // schedule.scheduleJob(spiderRule, async () => {
+        schedule.scheduleJob(spiderRule, async () => {
             for (var i = 0; i < settings.spider_path.length; i++) {
                 await this.getArticleLinkBG(settings.spider_path[i])
                     .catch(err => {
@@ -228,7 +228,7 @@ class Article {
                         console.log(err)
                     });
             }
-        // })
+        })
     }
 
     async updateOne(req, res, next) {
