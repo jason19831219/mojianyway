@@ -65,6 +65,9 @@ const mutations = {
     console.log(state.list)
     state.listPageInfo = pageInfo
   },
+  'HandleAvatarSuccess' (state, {path}) {
+    state.itemForm.authorAvatarSrc = path
+  },
   'HandleImageSuccess' (state, {index, path}) {
     if (!state.itemForm.imgSrc[index][0]) {
       state.itemForm.imgSrc.push([''])
@@ -88,7 +91,7 @@ const actions = {
     state.listPageInfo.pageNumber = val
     dispatch('getAll')
   },
-  async 'addOne' ({commit, state}) {
+  async 'addOne' ({commit, dispatch, state}) {
     state.itemForm.imgSrc.pop()
     const {data} = await api.post('article/addOne', {...state.itemForm}, true)
     if (data.state === 'success') {
@@ -96,6 +99,7 @@ const actions = {
         message: '保存成功',
         type: 'success'
       })
+      dispatch('getAll')
     } else {
       Message({
         message: data.message,
@@ -103,7 +107,7 @@ const actions = {
       })
     }
   },
-  async 'updateOne' ({commit, state}) {
+  async 'updateOne' ({commit, dispatch, state}) {
     state.itemForm.imgSrc.forEach(function (value, index) {
       if (!value[0]) {
         state.itemForm.imgSrc.splice(index, 1)
@@ -111,6 +115,7 @@ const actions = {
     })
     const {data} = await api.post('article/updateOne', {...state.itemForm}, true)
     if (data.state === 'success') {
+      dispatch('getAll')
       Message({
         message: '更新成功',
         type: 'success'
@@ -122,9 +127,10 @@ const actions = {
       })
     }
   },
-  async 'deleteOne' ({commit, state}) {
+  async 'deleteOne' ({commit, dispatch, state}) {
     const {data} = await api.get('article/deleteOne', {ids: state.itemForm.id}, true)
     if (data.state === 'success') {
+      dispatch('getAll')
       Message({
         message: '删除成功',
         type: 'success'
@@ -153,6 +159,9 @@ const actions = {
   },
   async 'handleImageSuccess' ({commit, state}, data) {
     commit('HandleImageSuccess', {...data})
+  },
+  async 'handleAvatarSuccess' ({commit, state}, data) {
+    commit('HandleAvatarSuccess', {...data})
   }
 }
 

@@ -69,14 +69,14 @@
         <template slot-scope="scope">
           <el-button
             type="primary"
-            @click="handleUpdate(scope.$index, scope.row)"
+            @click="handleUpdate(scope.$index)"
             size="small">
             修改
           </el-button>
           <el-button
             size="small"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除
+            @click="handleDelete(scope.$index)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -103,7 +103,7 @@
         </el-form-item>
         <el-form-item label="上传作者头像" prop="authorAvatarSrc">
           <el-upload class="image-upload-btn" action="/manage/uploads?type=images" :show-file-list="false"
-                     :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                     :on-success="handleAvatarSuccess" :before-upload="beforeImageUpload">
             <img v-if="itemForm.authorAvatarSrc" :src="itemForm.authorAvatarSrc"/>
             <i v-else class="el-icon-plus image-upload-icon"></i>
           </el-upload>
@@ -157,24 +157,8 @@ export default {
   },
   methods: {
     handleAvatarSuccess (res, file) {
-      this.itemForm.authorAvatarSrc = res.info.path
-    },
-    beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isPNG = file.type === 'image/png'
-      const isGIF = file.type === 'image/gif'
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG && !isPNG && !isGIF) {
-        this.$message.error('上传图片只能是 JPG,PNG,GIF 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!')
-      }
-      return (isJPG || isPNG || isGIF) && isLt2M
-    },
-    handleImageSuccess (res, file, upload, index) {
-      console.log(index)
-      this.$store.dispatch('server/article/handleImageSuccess', {path: res.info.path, index: index})
+      // this.itemForm.authorAvatarSrc = res.info.path
+      this.$store.dispatch('server/article/handleAvatarSuccess', {path: res.info.path})
     },
     beforeImageUpload (file) {
       const isJPG = file.type === 'image/jpeg'
@@ -189,18 +173,20 @@ export default {
       }
       return (isJPG || isPNG || isGIF) && isLt2M
     },
+    handleImageSuccess (res, file, upload, index) {
+      this.$store.dispatch('server/article/handleImageSuccess', {path: res.info.path, index: index})
+    },
     handleAdd () {
       this.DialogVisable = true
       this.addFlag = true
       this.$store.dispatch('server/article/setForm', -1)
     },
-    handleUpdate (index, row) {
+    handleUpdate (index) {
       this.DialogVisable = true
       this.addFlag = false
       this.$store.dispatch('server/article/setForm', index)
     },
-    handleDelete (index, row) {
-      console.log(row)
+    handleDelete (index) {
       this.NoticeVisable = true
       this.$store.dispatch('server/article/setForm', index)
     },
@@ -231,7 +217,6 @@ export default {
   },
   data () {
     return {
-      dialogTitle: '',
       DialogVisable: false,
       NoticeVisable: false,
       addFlag: false
