@@ -14,6 +14,7 @@ const fs = require('fs');
 const mime = require("./mime").types;
 const jwt = require("jsonwebtoken");
 const validatorUtil = require("./validatorUtil");
+const shortid = require("shortid");
 let systemService = {
 
     getFileMimeType: function (filePath) {
@@ -131,6 +132,23 @@ let systemService = {
             }
             return resolve(arr);
         })
+    },
+
+    checkIds(ids) {
+        if (!ids) return false;
+        let idState = true;
+        let idsArr = ids.split(",");
+        if (typeof idsArr === "object" && idsArr.length > 0) {
+            for (let i = 0; i < idsArr.length; i++) {
+                if (!shortid.isValid(idsArr[i])) {
+                    idState = false;
+                    break;
+                }
+            }
+        } else {
+            idState = false;
+        }
+        return idState;
     },
 
     checkFormData: function (fields) {

@@ -342,6 +342,31 @@ class Article {
         }
     }
 
+    async deleteOne(req, res, next) {
+        try {
+            let errMsg = '';
+            if (!service.checkIds(req.query.ids)) {
+                errMsg = '非法请求，请稍后重试！';
+            }
+            if (errMsg) {
+                res.send({
+                    state: 'error',
+                    message: errMsg
+                })
+            }
+            await ArticleModel.remove({ _id: req.query.ids });
+            res.send({
+                state: 'success'
+            });
+        } catch (err) {
+            res.send({
+                state: 'error',
+                type: 'ERROR_IN_SAVE_DATA',
+                message: '删除数据失败:' + err,
+            })
+        }
+    }
+
 
 }
 

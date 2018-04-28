@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <el-button type="text" @click="showAddItemFrom('itemForm')">添加Article</el-button>
+      <el-button size="small" type="primary" @click="handleAdd('itemForm')">添加</el-button>
     </div>
     <el-table
       :data="list"
@@ -35,6 +35,10 @@
         prop="sticky"
         label="是否置顶"
         width="150">
+        <template slot-scope="scope">
+          <i v-if="scope.row.sticky === true" class="el-icon-success icon-sticky-check"></i>
+          <i v-else class="el-icon-circle-close-outline icon-sticky-check"></i>
+        </template>
       </el-table-column>
       <el-table-column
         prop="updateDate"
@@ -61,13 +65,18 @@
       <el-table-column
         fixed="right"
         label="操作"
-        width="120">
+        width="320">
         <template slot-scope="scope">
           <el-button
-            v-if="!scope.row.sticky"
-            @click="showUpdateItemFrom(scope.$index)"
+            type="primary"
+            @click="handleUpdate(scope.$index, scope.row)"
             size="small">
             修改
+          </el-button>
+          <el-button
+            size="small"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -81,7 +90,7 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total=listInfo.totalItems>
     </el-pagination>
-    <el-dialog title="添加Article" :visible.sync="DialogVisable">
+    <el-dialog :title="addFlag? '添加': '修改'" :visible.sync="DialogVisable">
       <el-form :model="itemForm" :rules="itemFormRule" ref="itemForm">
         <el-form-item label="article的名称" prop="title">
           <el-input placeholder="请输入article的名称" v-model="itemForm.title"></el-input>
@@ -105,8 +114,8 @@
           <template slot-scope="scope">
           <span v-for="(item, index) in itemForm.imgSrc" :key="index">
             <el-upload class="image-upload-btn" action="/manage/uploads?type=images" :show-file-list="false"
-                     :objectBind="index"
-                     :on-success="handleImageSuccess" :before-upload="beforeImageUpload">
+                       :objectBind="index"
+                       :on-success="handleImageSuccess" :before-upload="beforeImageUpload">
               <img v-if="itemForm.imgSrc[index][0]" :src="itemForm.imgSrc[index][0]"/>
               <i v-if="!itemForm.imgSrc[index][0]" class="el-icon-plus image-upload-icon"></i>
             </el-upload>
@@ -121,9 +130,20 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="DialogVisable = false">取 消</el-button>
-        <el-button v-if="addFlag" type="primary" @click="addOne()">保存article</el-button>
-        <el-button v-if="!addFlag" type="primary" @click="updateOne()">保存article</el-button>
+        <el-button v-if="addFlag" type="primary" @click="addOne()">添加</el-button>
+        <el-button v-if="!addFlag" type="primary" @click="updateOne()">修改</el-button>
       </div>
+    </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="NoticeVisable"
+      width="30%"
+      center>
+      <span>确定执行删除？</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="NoticeVisable = false">取 消</el-button>
+    <el-button type="primary" @click="deleteOne()">确 定</el-button>
+  </span>
     </el-dialog>
   </div>
 </template>
@@ -136,17 +156,6 @@ export default {
     formState: Object
   },
   methods: {
-    addOne () {
-      this.$store.dispatch('server/article/addOne')
-    },
-    updateOne () {
-      this.$store.dispatch('server/article/updateOne')
-    },
-    showAddItemFrom () {
-      this.DialogVisable = true
-      this.addFlag = true
-      this.$store.dispatch('server/article/resetForm')
-    },
     handleAvatarSuccess (res, file) {
       this.itemForm.authorAvatarSrc = res.info.path
     },
@@ -180,10 +189,29 @@ export default {
       }
       return (isJPG || isPNG || isGIF) && isLt2M
     },
-    showUpdateItemFrom (index) {
+    handleAdd () {
+      this.DialogVisable = true
+      this.addFlag = true
+      this.$store.dispatch('server/article/setForm', -1)
+    },
+    handleUpdate (index, row) {
       this.DialogVisable = true
       this.addFlag = false
       this.$store.dispatch('server/article/setForm', index)
+    },
+    handleDelete (index, row) {
+      console.log(row)
+      this.NoticeVisable = true
+      this.$store.dispatch('server/article/setForm', index)
+    },
+    addOne () {
+      this.$store.dispatch('server/article/addOne')
+    },
+    updateOne () {
+      this.$store.dispatch('server/article/updateOne')
+    },
+    deleteOne () {
+      this.$store.dispatch('server/article/deleteOne')
     },
     handleSizeChange (val) {
       this.$store.dispatch('server/article/setPageSize', val)
@@ -203,7 +231,9 @@ export default {
   },
   data () {
     return {
+      dialogTitle: '',
       DialogVisable: false,
+      NoticeVisable: false,
       addFlag: false
     }
   },
@@ -226,21 +256,6 @@ export default {
     overflow: hidden;
   }
 
-  .el-upload--text {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 100px;
-    text-align: right;
-    filter: alpha(opacity=0);
-    opacity: 0;
-    outline: none;
-    background: white;
-    cursor: inherit;
-  }
-
   .image-upload-btn:hover {
     border-color: #409EFF;
   }
@@ -261,5 +276,9 @@ export default {
     right: 0;
     width: 100%;
     height: 100%;
+  }
+  .icon-sticky-check{
+    font-size: 24px;
+    text-align: center;
   }
 </style>

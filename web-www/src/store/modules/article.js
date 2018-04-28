@@ -103,21 +103,9 @@ const actions = {
       })
     }
   },
-  async 'resetForm' ({commit, state}) {
-    state.itemForm = {
-      title: '',
-      desc: '',
-      author: '',
-      authorAvatarSrc: '',
-      imgSrc: [['']],
-      fromSite: ''
-    }
-  },
   async 'updateOne' ({commit, state}) {
-    console.log(state.itemForm.imgSrc)
     state.itemForm.imgSrc.forEach(function (value, index) {
       if (!value[0]) {
-        console.log(index)
         state.itemForm.imgSrc.splice(index, 1)
       }
     })
@@ -134,9 +122,33 @@ const actions = {
       })
     }
   },
+  async 'deleteOne' ({commit, state}) {
+    const {data} = await api.get('article/deleteOne', {ids: state.itemForm.id}, true)
+    if (data.state === 'success') {
+      Message({
+        message: '删除成功',
+        type: 'success'
+      })
+    } else {
+      Message({
+        message: data.message,
+        type: 'error'
+      })
+    }
+  },
   async 'setForm' ({commit, state}, index) {
-    state.itemForm = state.list[index]
-    state.itemForm.author.replace(/\n/g, '').replace(/(^\s*)|(\s*$)/g, '')
+    if (index === -1) {
+      state.itemForm = {
+        title: '',
+        desc: '',
+        author: '',
+        authorAvatarSrc: '',
+        imgSrc: [],
+        fromSite: ''
+      }
+    } else {
+      state.itemForm = state.list[index]
+    }
     state.itemForm.imgSrc.push([])
   },
   async 'handleImageSuccess' ({commit, state}, data) {
