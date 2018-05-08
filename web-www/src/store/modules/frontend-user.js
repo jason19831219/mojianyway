@@ -22,16 +22,6 @@ var validateMobile = (rule, value, callback) => {
     callback()
   }
 }
-// var validateSmsCode = (rule, value, callback) => {
-//   if (value === '') {
-//     callback(new Error('请输入手机验证码'))
-//   } else {
-//     if (!validatorUtil.checkSmsCode(value)) {
-//       callback(new Error('请输入正确的手机验证码'))
-//     }
-//     callback()
-//   }
-// }
 
 const mutations = {
   GETSmsCode (state, phoneNum) {

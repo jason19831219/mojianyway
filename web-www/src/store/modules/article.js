@@ -2,11 +2,6 @@ import api from '@/api'
 import { Message } from 'element-ui'
 // import validatorUtil from '@/utils/validation'
 const state = () => ({
-  msg: {
-    type: 'success',
-    content: '',
-    count: 0
-  },
   list: [],
   listPageInfo: {
     pageNumber: 1,

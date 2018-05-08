@@ -46,43 +46,12 @@ let sessionConfig = {
 		pass: settings.redis_psd,
 		ttl: 1800 // 过期时间
 	})
-	// resave: false,
-	// saveUninitialized: true,
-	// store: new MongoStore({
-	//   db: "session",
-	//   host: "localhost",
-	//   port: 27017,
-	//   url: "mongodb://" + settings.mongo_username + ":" + settings.mongo_password + "@" + settings.mongo_host + ":" + settings.mongo_port + "/" + settings.mongo_db + ""
-	// })
 };
 
 
 
 
 app.use(session(sessionConfig));
-
-
-
-// app.use('/', index);
-// app.use('/manage', manage);
-// app.use('/api', api);
-// app.use('/static', express.static(resolve('../mojiclient/dist/static')))
-// app.get('*', function (request, response) {
-//   fs.readFile("../mojiclient/dist/index.html",function(err,data){
-//     // body
-//     if(err){
-//       console.log(err);
-//       response.writeHead(404,{"Content-Type":"text/html"});
-//     }
-//     else{
-//       //200：OK
-//       response.writeHead(200,{"Content-Type":"text/html"});
-//       response.write(data.toString());
-//     }
-//     response.end();
-//   });
-// })
-//
 
 app.use("/public", express.static(resolve("public")));
 app.use(express.static(path.join(__dirname, settings.frontend_path)));

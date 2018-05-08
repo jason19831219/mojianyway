@@ -5,11 +5,13 @@ import Login from '../views/login'
 import MobileCheck from '../components/mobile-check'
 import SmsCodeCheck from '../components/smscode-check'
 import AdminLogin from '../components/manage/admin-login'
-// import Article from '../views/articles'
+import Home from '../views/home'
 import Manage from '@/views/manage/index'
 import menus from '@/config/menu-config'
-Vue.use(Router)
+import VueTouch from 'vue-touch'
 
+Vue.use(Router)
+Vue.use(VueTouch, {name: 'v-touch'})
 var manageSubRouters = [{
   path: `/`,
   component: AdminLogin
@@ -25,11 +27,11 @@ menus.forEach((item) => {
 })
 
 var routes = [
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Reg
-  // },
+  {
+    path: '/',
+    name: 'Home',
+    component: Home
+  },
   {
     path: '/login',
     name: 'Login',

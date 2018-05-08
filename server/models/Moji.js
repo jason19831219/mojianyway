@@ -43,7 +43,7 @@ var MojiSchema = new Schema({
 	updateDate: {
 		type: Date,
 		default: Date.now
-	} // 更新时间
+	}
 }, {
 	versionKey: false,
 	timestamps: {createdAt: "createDate", updatedAt: "updateDate"}
@@ -57,8 +57,5 @@ MojiSchema.path("createDate").get(function (v) {
 MojiSchema.path("updateDate").get(function (v) {
 	return moment(v).format("YYYY-MM-DD");
 });
-
-var Moji = mongoose.model("Moji", MojiSchema);
-
-module.exports = Moji;
+module.exports = mongoose.model("Moji", MojiSchema);
 

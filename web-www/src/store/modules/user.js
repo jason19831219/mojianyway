@@ -1,85 +1,177 @@
 import api from '@/api'
-import validatorUtil from '@/utils/validation'
-
+import { Message } from 'element-ui'
+// import validatorUtil from '@/utils/validation'
 const state = () => ({
-  jwt_local_name: 'MOJI_ANYWAY_TOKEN',
-  mobileForm: {
-    mobile: ''
+  list: [],
+  listPageInfo: {
+    pageNumber: 1,
+    pageSize: 10,
+    totalItems: 0,
+    nameReg: ''
   },
-  mobileFormRule: {
-    mobile: [
-      {validator: validateMobile, trigger: 'blur'}
-    ]
+  itemForm: {
+    name: '',
+    desc: '',
+    author: '',
+    authorAvatarSrc: '',
+    imgSrc: [[]],
+    fromSite: ''
   },
-  smsForm: {
-    code: ''
-  },
-  smsFormRule: {
-    code: [
-      {validator: validateSmsCode, trigger: 'blur'}
+  itemFormRule: {
+    title: [
+      {
+        required: true,
+        validator: (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error('名字'))
+          }
+          callback()
+        },
+        trigger: 'blur'
+      }
+    ],
+    imgSrc: [
+      {
+        required: true,
+        trigger: 'blur'
+      }
+    ],
+    author: [
+      {
+        trigger: 'blur'
+      }
+    ],
+    desc: [
+      {
+        trigger: 'blur'
+      }
     ]
   }
 })
 
-var validateMobile = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error('请输入手机号'))
-  } else {
-    if (!validatorUtil.checkMobilePhoneNum(value)) {
-      callback(new Error('请输入正确的手机号'))
-    }
-    callback()
-  }
-}
-var validateSmsCode = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error('请输入手机验证码'))
-  } else {
-    if (!validatorUtil.checkSmsCode(value)) {
-      callback(new Error('请输入正确的手机验证码'))
-    }
-    callback()
-  }
-}
-
 const mutations = {
-  GETSmsCode (state, phoneNum) {
-    console.log(phoneNum)
+  'receiveList' (state, {list, pageInfo}) {
+    state.list = list
+    state.list.forEach(function (value) {
+      value.imgSrc.forEach(function (value, index, array) {
+        array[index] = [(value[0].split(' '))[0]]
+      })
+    })
+    console.log(state.list)
+    state.listPageInfo = pageInfo
   },
-
-  ReceiveSmsCode (state, {userInfo}) {
-    console.log(state, userInfo)
+  'HandleAvatarSuccess' (state, {path}) {
+    state.itemForm.authorAvatarSrc = path
   },
-
-  mobileAuth (state, phoneNum) {
-    state.mobile.mobile = phoneNum
+  'HandleImageSuccess' (state, {index, path}) {
+    if (!state.itemForm.imgSrc[index][0]) {
+      state.itemForm.imgSrc.push([''])
+    }
+    state.itemForm.imgSrc.splice(index, 1, [path])
   }
 }
 
 const actions = {
-  async getSmsCode ({commit}, value) {
-    const {data} = await api.post('users/getSmsCode', {mobile: value})
+  async 'getAll' ({commit, state}) {
+    const {data} = await api.get('article/getAll', {...state.listPageInfo}, true)
+    if (data.list && data.state === 'success') {
+      commit('receiveList', {...data})
+    }
+  },
+  async 'setPageSize' ({commit, dispatch, state}, val) {
+    state.listPageInfo.pageSize = val
+    dispatch('getAll')
+  },
+  async 'setPageNumber' ({commit, dispatch, state}, val) {
+    state.listPageInfo.pageNumber = val
+    dispatch('getAll')
+  },
+  async 'addOne' ({commit, dispatch, state}) {
+    state.itemForm.imgSrc.pop()
+    const {data} = await api.post('article/addOne', {...state.itemForm}, true)
     if (data.state === 'success') {
-      commit('ReceiveSmsCode', {
-        ...data
+      Message({
+        message: '保存成功',
+        type: 'success'
+      })
+      dispatch('getAll')
+    } else {
+      Message({
+        message: data.message,
+        type: 'error'
       })
     }
   },
-  async 'loginForm' ({
-    commit
-  }, params) {
-    commit('recevieUserLoginForm', {
-      ...params
+  async 'updateOne' ({commit, dispatch, state}) {
+    state.itemForm.imgSrc.forEach(function (value, index) {
+      if (!value[0]) {
+        state.itemForm.imgSrc.splice(index, 1)
+      }
     })
+    const {data} = await api.post('article/updateOne', {...state.itemForm}, true)
+    if (data.state === 'success') {
+      dispatch('getAll')
+      Message({
+        message: '更新成功',
+        type: 'success'
+      })
+    } else {
+      Message({
+        message: data.message,
+        type: 'error'
+      })
+    }
+  },
+  async 'deleteOne' ({commit, dispatch, state}) {
+    const {data} = await api.get('article/deleteOne', {ids: state.itemForm.id}, true)
+    if (data.state === 'success') {
+      dispatch('getAll')
+      Message({
+        message: '删除成功',
+        type: 'success'
+      })
+    } else {
+      Message({
+        message: data.message,
+        type: 'error'
+      })
+    }
+  },
+  async 'setForm' ({commit, state}, index) {
+    if (index === -1) {
+      state.itemForm = {
+        title: '',
+        desc: '',
+        author: '',
+        authorAvatarSrc: '',
+        imgSrc: [],
+        fromSite: ''
+      }
+    } else {
+      state.itemForm = state.list[index]
+    }
+    state.itemForm.imgSrc.push([])
+  },
+  async 'handleImageSuccess' ({commit, state}, data) {
+    commit('HandleImageSuccess', {...data})
+  },
+  async 'handleAvatarSuccess' ({commit, state}, data) {
+    commit('HandleAvatarSuccess', {...data})
   }
 }
 
 const getters = {
-  'mobileForm' (state) {
-    return state.mobileForm
+  'list' (state) {
+    return state.list
   },
-  'mobileFormRule' (state) {
-    return state.mobileFormRule
+  'listPageInfo' (state) {
+    return state.listPageInfo
+  },
+  'itemForm' (state) {
+    return state.itemForm
+  },
+  'itemFormRule' (state) {
+    return state.itemFormRule
   }
 }
 
