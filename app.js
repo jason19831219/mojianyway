@@ -1,4 +1,5 @@
 var express = require("express");
+var https = require("https");
 var path = require("path");
 var logger = require("morgan");
 var cookieParser = require("cookie-parser");
@@ -47,6 +48,7 @@ let sessionConfig = {
 		ttl: 1800 // 过期时间
 	})
 };
+
 
 
 
@@ -115,20 +117,24 @@ app.get("*", function(req, res) {
 // });
 
 
+var privatekey = fs.readFileSync('./utils/privateKey.pem', 'utf8');
+var cert = fs.readFileSync('./utils/cert.pem', 'utf8');
+var options = {
+	key:privatekey,
+	cert:cert
+};
+var httpsServer = https.createServer(options,app);
 
+httpsServer.listen(443);
 
-
-
-
-var server = app.listen(settings.serverPort, function () {
-
-	var host = server.address().address;
-	var port = server.address().port;
-
-	console.log("应用实例，访问地址为 http://%s:%s", host, port);
-
-});
-
+// var server = app.listen(settings.serverPort, function () {
+//
+// 	var host = server.address().address;
+// 	var port = server.address().port;
+//
+// 	console.log("应用实例，访问地址为 http://%s:%s", host, port);
+//
+// });
 
 
 module.exports = app;
