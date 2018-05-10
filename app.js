@@ -117,10 +117,10 @@ app.get("*", function(req, res) {
 // });
 
 
-var privatekey = fs.readFileSync('./utils/privateKey.pem', 'utf8');
-var cert = fs.readFileSync('./utils/cert.pem', 'utf8');
+var key = fs.readFileSync('./utils/1528049153992.key');
+var cert = fs.readFileSync('./utils/1528049153992.pem');
 var options = {
-	key:privatekey,
+	key:key,
 	cert:cert
 };
 var httpsServer = https.createServer(options,app);
