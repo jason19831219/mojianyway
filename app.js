@@ -1,5 +1,6 @@
 var express = require("express");
 var https = require("https");
+var http = require("http");
 var path = require("path");
 var logger = require("morgan");
 var cookieParser = require("cookie-parser");
@@ -8,25 +9,14 @@ const fs = require("fs");
 const resolve = file => path.resolve(__dirname, file);
 const session = require("express-session");
 const RedisStore =require("connect-redis")(session);
-
-
 const settings = require("./utils/settings");
-
 
 const api = require("./server/router/api");
 const manage = require("./server/router/manage");
 
 var app = express();
-
-// view engine setup
-//
-// app.set("views", path.join(__dirname, settings.frontend_path));
-// app.engine(".html", require("ejs").__express);
 app.set("view engine", "ejs");
 
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -48,39 +38,13 @@ let sessionConfig = {
 		ttl: 1800 // 过期时间
 	})
 };
-
-
-
-
-
 app.use(session(sessionConfig));
 
 app.use("/public", express.static(resolve("public")));
 app.use(express.static(path.join(__dirname, settings.frontend_path)));
 app.use("/api", api);
 app.use("/manage", manage);
-// app.get('/', function(req, res, next) {
-//
-//   res.cookie(settings.auth_cookie_name, "sdfsdfs",
-//     { path: '/', maxAge: 1000 * 60 * 60 * 24 * 30, signed: true, httpOnly: true });
-//
-//
-// });
 
-
-
-// app.get('/session', function (req, res) {
-//   if (req.session.sign) {//检查用户是否已经登录
-//     console.log(req.session);//打印session的值
-//     res.send('welecome <strong>' + req.session.name + '</strong>, 欢迎你再次登录');
-//   } else {
-//
-//     console.log(req.session);
-//     req.session.sign = true;
-//     req.session.name = 'https://github.com/CleverFan';
-//     res.send('欢迎登陆！');
-//   }
-// });
 
 app.get("*", function(req, res) {
 	const html = fs.readFileSync(path.resolve(__dirname, settings.frontend_path+"/index.html"), "utf-8");
@@ -96,45 +60,22 @@ app.get("*", function(req, res) {
 // 	res.header("Content-Type", "application/json;charset=utf-8");
 // 	next();
 // });
-// app.use(express.static(path.join(__dirname, settings.frontend_path)));
-// catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   var err = new Error('Not Found');
-//   err.status = 404;
-//   next(err);
-// });
-
-// // error handler
-// app.use(function(err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get('env') === 'development' ? err : {};
-//
-//   // render the error page
-//   res.status(err.status || 500);
-//   res.render('error');
-//
-// });
 
 
-var key = fs.readFileSync('./utils/1528049153992.key');
-var cert = fs.readFileSync('./utils/1528049153992.pem');
-var options = {
-	key:key,
-	cert:cert
-};
-var httpsServer = https.createServer(options,app);
+var privateKey  = fs.readFileSync("./utils/1528049153992.key");
+var certificate = fs.readFileSync("./utils/1528049153992.pem");
+var credentials = {key: privateKey, cert: certificate};
 
-httpsServer.listen(443);
+var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
 
-// var server = app.listen(settings.serverPort, function () {
-//
-// 	var host = server.address().address;
-// 	var port = server.address().port;
-//
-// 	console.log("应用实例，访问地址为 http://%s:%s", host, port);
-//
-// });
+httpServer.listen(settings.serverPort, function() {
+	console.log("HTTP Server is running on: http://localhost:%s", settings.serverPort);
+});
+httpsServer.listen(settings.serverSSLPort, function() {
+	console.log("HTTPS Server is running on: https://localhost:%s", settings.serverSSLPort);
+});
+
 
 
 module.exports = app;
