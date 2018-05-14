@@ -8,6 +8,8 @@ const https = require("https");
 const qs = require("querystring");
 const path = require("path");
 
+// 新建一个对象，建议只保存一个对象调用服务接口
+
 const {
 	Moji,
 	Admin,
@@ -19,6 +21,12 @@ const {
 	authAdmin,
 	settings
 } = require("../../utils");
+
+var AipFaceClient = require("baidu-aip-sdk").face;
+var APP_ID = settings.aip_appID;
+var API_KEY = settings.aip_api_key;
+var SECRET_KEY = settings.aip_secret_key;
+
 
 router.use(function(req, res, next) {
 	if(req.signedCookies[settings.admin_auth_cookie_name]) {}
@@ -48,55 +56,28 @@ function base64_encode(file) {
 }
 
 router.get("/startAipFace", function (req, res, next) {
-	const param = qs.stringify({
-		"grant_type": "client_credentials",
-		"client_id": settings.aip_api_key,
-		"client_secret": settings.aip_secret_key
-	});
-	var accessToken = "";
-	console.log(base64_encode("wechat.jpeg"));
-	https.get(
-		{
-			hostname: "aip.baidubce.com",
-			path: "/oauth/2.0/token?" + param,
-			agent: false
-		},
-		function (response) {
-			var myStr = "";
-			response.on("data", function(chunk) {
-				myStr += chunk;
-			});
-			response.on("end", function() {
-				accessToken = JSON.parse(myStr)["access_token"];
-				res.send({
-					state: "success",
-					data: accessToken
-				});
-			});
+	var client = new AipFaceClient(APP_ID, API_KEY, SECRET_KEY);
+	var image = base64_encode("wechat.jpeg");
+
+	var imageType = "BASE64";
+	var options = {};
+	options["face_field"] = "age,beauty,expression,faceshape,gender,glasses,landmark,race,qualities";
+	options["max_face_num"] = "1";
+
+	// 带参数调用人脸检测
+	client.detect(image, imageType, options).then(function(result) {
+		if(!result.error_code){
+            console.log(result.error_code);
 		}
-	);
+
+	}).catch(function(err) {
+		// 如果发生网络错误
+		console.log(err);
+	});
 });
 
 
-
-
-function decode_base64(base64str , filename){
-
-	var buf = Buffer.from(base64str,"base64");
-
-	fs.writeFile(path.join(__dirname,"../../public/upload/images/",filename), buf, function(error){
-		if(error){
-			throw error;
-		}else{
-			console.log("File created from base64 string!");
-			return true;
-		}
-	});
-
-}
-
-
-router.post("/uploads",authAdmin, (req, res, next) => {
+router.post("/uploads", (req, res, next) => {
 
 	//    获取传入参数
 	let params = url.parse(req.url, true);
@@ -124,7 +105,7 @@ router.post("/uploads",authAdmin, (req, res, next) => {
 				if (fileType == "images") {
 					if (realFileType.fileType == "jpg" || realFileType.fileType == "jpeg" || realFileType.fileType == "png" || realFileType.fileType == "gif") {
 						fs.rename(file.path, uploadPath + newFileName, function () {
-							var imageBuf = fs.readFileSync("/"+uploadPath + newFileName);
+							var imageBuf = fs.readFileSync(path.join(__dirname, "../../"+uploadPath + newFileName));
 							res.send(
 								{
 									state: "success",
