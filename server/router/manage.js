@@ -42,40 +42,40 @@ router.post("/mojiSet/updateMojiItem",authAdmin, MojiSet.updateMojiItem);
 router.get("/mojiSet/getList",authAdmin, MojiSet.getList);
 
 
-// function base64_encode(file) {
-// 	var bitmap = fs.readFileSync(path.join(__dirname,"../../public/upload/images/",file));
-// 	return new Buffer(bitmap).toString("base64");
-// }
-//
-// router.get("/startAipFace", function (req, res, next) {
-// 	const param = qs.stringify({
-// 		"grant_type": "client_credentials",
-// 		"client_id": settings.aip_api_key,
-// 		"client_secret": settings.aip_secret_key
-// 	});
-// 	var accessToken = "";
-// 	console.log(base64_encode("wechat.jpeg"));
-// 	https.get(
-// 		{
-// 			hostname: "aip.baidubce.com",
-// 			path: "/oauth/2.0/token?" + param,
-// 			agent: false
-// 		},
-// 		function (response) {
-// 			var myStr = "";
-// 			response.on("data", function(chunk) {
-// 				myStr += chunk;
-// 			});
-// 			response.on("end", function() {
-// 				accessToken = JSON.parse(myStr)["access_token"];
-// 				res.send({
-// 					state: "success",
-// 					data: accessToken
-// 				});
-// 			});
-// 		}
-// 	);
-// });
+function base64_encode(file) {
+	var bitmap = fs.readFileSync(path.join(__dirname,"../../public/upload/images/",file));
+	return new Buffer(bitmap).toString("base64");
+}
+
+router.get("/startAipFace", function (req, res, next) {
+	const param = qs.stringify({
+		"grant_type": "client_credentials",
+		"client_id": settings.aip_api_key,
+		"client_secret": settings.aip_secret_key
+	});
+	var accessToken = "";
+	console.log(base64_encode("wechat.jpeg"));
+	https.get(
+		{
+			hostname: "aip.baidubce.com",
+			path: "/oauth/2.0/token?" + param,
+			agent: false
+		},
+		function (response) {
+			var myStr = "";
+			response.on("data", function(chunk) {
+				myStr += chunk;
+			});
+			response.on("end", function() {
+				accessToken = JSON.parse(myStr)["access_token"];
+				res.send({
+					state: "success",
+					data: accessToken
+				});
+			});
+		}
+	);
+});
 
 
 
