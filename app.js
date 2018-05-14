@@ -41,10 +41,11 @@ let sessionConfig = {
 app.use(session(sessionConfig));
 
 app.use("/public", express.static(resolve("public")));
+app.use("/jsface/", express.static(path.join(__dirname, settings.jsface_path)));
+
 app.use(express.static(path.join(__dirname, settings.frontend_path)));
 app.use("/api", api);
 app.use("/manage", manage);
-
 
 app.get("*", function(req, res) {
 	const html = fs.readFileSync(path.resolve(__dirname, settings.frontend_path+"/index.html"), "utf-8");

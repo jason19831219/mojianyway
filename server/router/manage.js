@@ -4,9 +4,9 @@ const formidable = require("formidable");
 const url = require("url");
 const moment = require("moment");
 const fs = require("fs");
-
-
-
+const https = require("https");
+const qs = require("querystring");
+const path = require("path");
 
 const {
 	Moji,
@@ -17,7 +17,7 @@ const {
 const {
 	service,
 	authAdmin,
-	settings,
+	settings
 } = require("../../utils");
 
 router.use(function(req, res, next) {
@@ -40,6 +40,63 @@ router.get("/moji/getAll",authAdmin, Moji.getAll);
 router.post("/mojiSet/addOne",authAdmin, MojiSet.addOne);
 router.post("/mojiSet/updateMojiItem",authAdmin, MojiSet.updateMojiItem);
 router.get("/mojiSet/getList",authAdmin, MojiSet.getList);
+
+
+function base64_encode(file) {
+	var bitmap = fs.readFileSync(path.join(__dirname,"../../public/upload/images/",file));
+	return new Buffer(bitmap).toString("base64");
+}
+
+router.get("/startAipFace", function (req, res, next) {
+	const param = qs.stringify({
+		"grant_type": "client_credentials",
+		"client_id": settings.aip_api_key,
+		"client_secret": settings.aip_secret_key
+	});
+	var accessToken = "";
+	console.log(base64_encode("wechat.jpeg"));
+	https.get(
+		{
+			hostname: "aip.baidubce.com",
+			path: "/oauth/2.0/token?" + param,
+			agent: false
+		},
+		function (response) {
+			var myStr = "";
+			response.on("data", function(chunk) {
+				myStr += chunk;
+			});
+			response.on("end", function() {
+				accessToken = JSON.parse(myStr)["access_token"];
+				res.send({
+					state: "success",
+					data: accessToken
+				});
+			});
+		}
+	);
+
+
+});
+
+
+
+
+function decode_base64(base64str , filename){
+
+	var buf = Buffer.from(base64str,"base64");
+
+	fs.writeFile(path.join(__dirname,"../../public/upload/images/",filename), buf, function(error){
+		if(error){
+			throw error;
+		}else{
+			console.log("File created from base64 string!");
+			return true;
+		}
+	});
+
+}
+
 
 router.post("/uploads",authAdmin, (req, res, next) => {
 
@@ -69,6 +126,7 @@ router.post("/uploads",authAdmin, (req, res, next) => {
 				if (fileType == "images") {
 					if (realFileType.fileType == "jpg" || realFileType.fileType == "jpeg" || realFileType.fileType == "png" || realFileType.fileType == "gif") {
 						fs.rename(file.path, uploadPath + newFileName, function () {
+							var imageBuf = fs.readFileSync("/"+uploadPath + newFileName);
 							res.send(
 								{
 									state: "success",
