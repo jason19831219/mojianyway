@@ -9,6 +9,7 @@
     "@alicloud/sms-sdk": "^1.0.8",
     "ajv": "^6.4.0",
     "async": "^2.6.0",
+    "baidu-aip-sdk": "file:aip-node-sdk-2.3.1",
     "cheerio": "^1.0.0-rc.2",
     "china-time": "^0.12.3",
     "connect-redis": "^3.3.3",

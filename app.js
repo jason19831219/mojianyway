@@ -6,6 +6,7 @@ var logger = require("morgan");
 var cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
 const fs = require("fs");
+
 const resolve = file => path.resolve(__dirname, file);
 const session = require("express-session");
 const RedisStore =require("connect-redis")(session);
@@ -40,10 +41,13 @@ let sessionConfig = {
 };
 app.use(session(sessionConfig));
 
-app.use("/public", express.static(resolve("public")));
-app.use("/jsface/", express.static(path.join(__dirname, settings.jsface_path)));
+app.use("/public", express.static("./public"));
+app.use("/face-test", express.static("./face-test/dist"));
+// app.use("/face-test", function(req,res){
+//     res.send("哈哈");
+// });
 
-app.use(express.static(path.join(__dirname, settings.frontend_path)));
+app.use(express.static("./web-www/dist"));
 app.use("/api", api);
 app.use("/manage", manage);
 

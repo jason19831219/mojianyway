@@ -22,10 +22,10 @@ const {
 	settings
 } = require("../../utils");
 
-// var AipFaceClient = require("baidu-aip-sdk").face;
-// var APP_ID = settings.aip_appID;
-// var API_KEY = settings.aip_api_key;
-// var SECRET_KEY = settings.aip_secret_key;
+var AipFaceClient = require("baidu-aip-sdk").face;
+var APP_ID = settings.aip_appID;
+var API_KEY = settings.aip_api_key;
+var SECRET_KEY = settings.aip_secret_key;
 
 
 router.use(function(req, res, next) {
@@ -50,31 +50,39 @@ router.post("/mojiSet/updateMojiItem",authAdmin, MojiSet.updateMojiItem);
 router.get("/mojiSet/getList",authAdmin, MojiSet.getList);
 
 
-// function base64_encode(file) {
-// 	var bitmap = fs.readFileSync(path.join(__dirname,"../../public/upload/images/",file));
-// 	return new Buffer(bitmap).toString("base64");
-// }
-//
-// router.get("/startAipFace", function (req, res, next) {
-// 	var client = new AipFaceClient(APP_ID, API_KEY, SECRET_KEY);
-// 	var image = base64_encode("wechat.jpeg");
-//
-// 	var imageType = "BASE64";
-// 	var options = {};
-// 	options["face_field"] = "age,beauty,expression,faceshape,gender,glasses,landmark,race,qualities";
-// 	options["max_face_num"] = "1";
-//
-// 	// 带参数调用人脸检测
-// 	client.detect(image, imageType, options).then(function(result) {
-// 		if(!result.error_code){
-//             console.log(result.error_code);
-// 		}
-//
-// 	}).catch(function(err) {
-// 		// 如果发生网络错误
-// 		console.log(err);
-// 	});
-// });
+function base64_encode(file) {
+	var bitmap = fs.readFileSync(path.join(__dirname,"../../",file));
+	return new Buffer(bitmap).toString("base64");
+}
+
+router.post("/startAipFace", function (req, res, next) {
+	var fields = req.body;
+	console.log(fields.path);
+	var client = new AipFaceClient(APP_ID, API_KEY, SECRET_KEY);
+	var image = base64_encode(fields.path);
+
+	var imageType = "BASE64";
+	var options = {};
+	options["face_field"] = "age,beauty,expression,faceshape,gender,glasses,landmark,race,qualities";
+	options["max_face_num"] = "1";
+
+	// 带参数调用人脸检测
+	client.detect(image, imageType, options).then(function(result) {
+		if(!result.error_code){
+			console.log(result.result.face_list);
+			res.send(
+				{
+					state: "success",
+					message: "分析成功",
+					info:result.result.face_list
+				});
+		}
+
+	}).catch(function(err) {
+		// 如果发生网络错误
+		console.log(err);
+	});
+});
 
 
 router.post("/uploads", (req, res, next) => {
