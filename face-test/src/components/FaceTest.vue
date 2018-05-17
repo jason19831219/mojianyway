@@ -25,16 +25,6 @@ import $ from 'jquery'
 export default {
   methods: {
     uploadImage: function (e) {
-      AlertModule.show({
-        title: 'VUX is Cool',
-        content: 'Do you agree?',
-        onShow () {
-          console.log('Module: I\'m showing')
-        },
-        onHide () {
-          console.log('Module: I\'m hiding now')
-        }
-      })
       var boxElementWidth = $('#fabricBox').width()
       var boxElementHeight = $('#fabricBox').height()
       var canvas = new fabric.Canvas('fabricCanvas', {
@@ -45,7 +35,7 @@ export default {
       canvas.clear()
       var file = e.target.files[0]
       const isImage = (file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/jpeg')
-      const isLt2M = file.size / 1024 < 2
+      const isLt2M = file.size / 1024 / 1024 / 2 < 2
       if (!isLt2M) {
         AlertModule.show({
           title: 'more than 2M',
