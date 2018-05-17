@@ -25,22 +25,39 @@ import $ from 'jquery'
 export default {
   methods: {
     uploadImage: function (e) {
+      AlertModule.show({
+        title: 'VUX is Cool',
+        content: 'Do you agree?',
+        onShow () {
+          console.log('Module: I\'m showing')
+        },
+        onHide () {
+          console.log('Module: I\'m hiding now')
+        }
+      })
+      var boxElementWidth = $('#fabricBox').width()
+      var boxElementHeight = $('#fabricBox').height()
+      var canvas = new fabric.Canvas('fabricCanvas', {
+        selection: false,
+        width: boxElementWidth,
+        height: boxElementHeight
+      })
+      canvas.clear()
       var file = e.target.files[0]
       const isImage = (file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/jpeg')
-      const isLt2M = file.size / 1024 / 1024 / 2 < 2
+      const isLt2M = file.size / 1024 < 2
       if (!isLt2M) {
         AlertModule.show({
-          title: 'VUX is Cool',
-          content: this.$t('上传头像图片大小不能超过 2M!')
+          title: 'more than 2M',
+          content: 'more than 2M'
         })
         return
       }
       if (!isImage) {
         AlertModule.show({
           title: 'VUX is Cool',
-          content: this.$t('只能上传图片！')
+          content: 'only image'
         })
-        this.$message.error('只能上传图片！')
         return
       }
       var data = new FormData()
@@ -82,8 +99,8 @@ export default {
             //   })
           } else {
             AlertModule.show({
-              title: 'VUX is Cool',
-              content: this.$t('失败')
+              title: 'failure',
+              content: 'failure'
             })
           }
         }).catch(function (error) {
@@ -108,9 +125,11 @@ export default {
       var boxElementHeight = $('#fabricBox').height()
       var rate = 1
       console.log(realImageWidth)
-      if (realImageWidth > boxElementWidth) {
-        rate = realImageWidth / boxElementWidth
-      }
+      // if (realImageWidth > boxElementWidth) {
+      //   rate = realImageWidth / boxElementWidth
+      // } else {
+      rate = realImageWidth / boxElementWidth
+      // }
       api.post('startAipFace', {path: this.addForm.src}, true)
         .then(result => {
           if (result.data.state === 'success') {
