@@ -13,18 +13,23 @@
         <div slot="footer" class="dialog-footer">
             <XButton class="primary-button" type="primary" @click.native="getFaceTest()">检测</XButton>
         </div>
+        <loading :show="show1" text=""></loading>
     </div>
 </template>
 
 <script>
 import api from '../../api'
-import {AlertModule, XButton} from 'vux'
+import {AlertModule, XButton, Loading, TransferDomDirective as TransferDom} from 'vux'
 import {fabric} from 'fabric'
 import $ from 'jquery'
 
 export default {
+  directives: {
+    TransferDom
+  },
   methods: {
     uploadImage: function (e) {
+      this.show1 = true
       var boxElementWidth = $('#fabricBox').width()
       var boxElementHeight = $('#fabricBox').height()
       var canvas = new fabric.Canvas('fabricCanvas', {
@@ -70,23 +75,9 @@ export default {
       api
         .post('uploads?type=images', data, {headers: {'Content-Type': 'multipart/form-data'}}, true)
         .then(response => {
+          this.show1 = false
           if (response.data.state === 'success') {
             this.addForm.src = response.data.info.path
-            // var imgElement = document.getElementById('faceImg')
-            // var boxElement = document.getElementById('fabricBox')
-            // if (imgElement.width > boxElement.width) {
-            //   imgElement.width = boxElement.width
-            // }
-            // console.log($('#faceImg').attr('src'))
-            // // var screenImage = $('#faceImg')
-            //
-            // $('<img>') // Make in memory copy of image to avoid css issues
-            //   .attr('src', '/public/upload/images/img20180516173524.jpeg')
-            //   .load(function () {
-            //     // var width = this.width // Note: $(this).width() will not
-            //     // var height = this.height // work for in memory images.
-            //     console.log(this)
-            //   })
           } else {
             AlertModule.show({
               title: 'failure',
@@ -105,53 +96,31 @@ export default {
       })
     },
     getFaceTest: function () {
-      console.log($('#faceImg').attr('src'))
+      this.show1 = true
       var image = new Image()
       image.src = $('#faceImg').attr('src')
       var realImageWidth = image.width
-      // var realImageHeight = image.height
 
       var boxElementWidth = $('#fabricBox').width()
       var boxElementHeight = $('#fabricBox').height()
       var rate = 1
-      console.log(realImageWidth)
-      // if (realImageWidth > boxElementWidth) {
-      //   rate = realImageWidth / boxElementWidth
-      // } else {
       rate = realImageWidth / boxElementWidth
-      // }
       api.post('startAipFace', {path: this.addForm.src}, true)
         .then(result => {
+          this.show1 = false
           if (result.data.state === 'success') {
             var canvas = new fabric.Canvas('fabricCanvas', {
               selection: false,
               width: boxElementWidth,
               height: boxElementHeight
             })
-            // fabric.Image.fromURL(this.addForm.src, (oImg) => {
-            //   oImg.scale(1 / rate)
-            //   console.log(1 / rate)
-            //   canvas.add(oImg)
-            //
-            // })
             var list = result.data.info[0].landmark72
             list.forEach((value, key) => {
               if (key < list.length - 1 && key !== 12 && key !== 21 && key !== 29 && key !== 38 && key !== 46 && key !== 57) {
                 var line = this.makeLine([value.x / rate, value.y / rate, list[key + 1].x / rate, list[key + 1].y / rate])
-                console.log(value.x)
                 canvas.add(line)
               }
             })
-            // fabric.Image.fromURL(this.addForm.src, function (img) {
-            //   var oImg = img.set({left: 0, top: 0}).scale(0.25)
-            //   canvas.add(oImg)
-            // })
-            // var canvas = document.getElementById('canvas')
-            // var ctx = canvas.getContext('2d')
-            // ctx.clearRect(0, 0, canvas.width, canvas.height)
-            // ctx.fillStyle = 'black'
-            // ctx.font = '20px Georgia'
-            // ctx.fillText('japsodnfwief', 10, 50)
           } else {
 
           }
@@ -162,10 +131,12 @@ export default {
   },
   computed: {},
   components: {
-    XButton
+    XButton,
+    Loading
   },
   data () {
     return {
+      show1: false,
       addForm: {
         src: ''
       }
