@@ -9,6 +9,9 @@
       </div>
       <input @change="uploadImage" type="file" accept="image/*" name="image"/>
     </div>
+    <div slot="footer" class="dialog-footer">
+      <XButton class="primary-button" type="primary" @click.native="getFaceTest()">检测</XButton>
+    </div>
     <div v-if="detail">
       <x-table>
         <tbody>
@@ -42,11 +45,20 @@
         </tr>
         </tbody>
       </x-table>
+      <x-table>
+        <tbody>
+        <tr>
+          <td>性别</td>
+          <td>{{detail.gender.type}}</td>
+        </tr>
+        <tr>
+          <td>可信度</td>
+          <td>{{detail.gender.probability}}</td>
+        </tr>
+        </tbody>
+      </x-table>
     </div>
-    <!--<div class="imgSrc">{{addForm.src}}</div>-->
-    <div slot="footer" class="dialog-footer">
-      <XButton class="primary-button" type="primary" @click.native="getFaceTest()">检测</XButton>
-    </div>
+
     <loading :show="show1" text=""></loading>
   </div>
 </template>
@@ -166,6 +178,10 @@ export default {
                 roll: ''
               },
               face_shape: {
+                type: '',
+                probability: ''
+              },
+              gender: {
                 type: '',
                 probability: ''
               }
@@ -362,6 +378,10 @@ export default {
           roll: ''
         },
         face_shape: {
+          type: '',
+          probability: ''
+        },
+        gender: {
           type: '',
           probability: ''
         }
