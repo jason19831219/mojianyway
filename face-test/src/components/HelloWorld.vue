@@ -109,31 +109,6 @@ export default {
       // }
 
       this.imgPreview(file)
-
-      // var data = new FormData()
-      // data.append('image', file)
-      // api
-      //   .post('uploads?type=images', data, {headers: {'Content-Type': 'multipart/form-data'}}, true)
-      //   .then(response => {
-      //     this.show1 = false
-      //     if (response.data.state === 'success') {
-      //       this.addForm.src = response.data.info.path
-      //       var image = new Image()
-      //       image.src = this.addForm.src
-      //
-      //       image.onload = () => {
-      //         this.addForm.realImageWidth = image.width
-      //       }
-      //     } else {
-      //       AlertModule.show({
-      //         title: 'failure',
-      //         content: 'failure'
-      //       })
-      //     }
-      //   }).catch(function (error) {
-      //     this.show1 = false
-      //     console.log(error) // catch your error
-      //   })
     },
     imgPreview (file) {
       let self = this
@@ -180,6 +155,21 @@ export default {
           this.show1 = false
           if (response.data.state === 'success') {
             this.addForm.src = response.data.info.path
+
+            this.detail = {
+              location: {
+                rotation: ''
+              },
+              angle: {
+                yaw: '',
+                pitch: '',
+                roll: ''
+              },
+              face_shape: {
+                type: '',
+                probability: ''
+              }
+            }
             var image = new Image()
             image.src = this.addForm.src
 
