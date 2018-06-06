@@ -7,9 +7,9 @@ const fs = require("fs");
 const https = require("https");
 const qs = require("querystring");
 const path = require("path");
+const base64Img = require("base64-img");
 
 // 新建一个对象，建议只保存一个对象调用服务接口
-
 const {
 	Moji,
 	Admin,
@@ -85,10 +85,49 @@ router.post("/startAipFace", function (req, res, next) {
 });
 
 
+router.post("/uploadsImageBase64", (req, res, next) => {
+
+	// var imgData = req.body.imgData;
+	// console.log(imgData);
+	// //过滤data:URL
+	// var base64Data  =   imgData.replace(/^data:image\/png;base64,/, "");
+	// base64Data  +=  base64Data.replace("+", " ");
+	// var dataBuffer  =   new Buffer(base64Data, "base64").toString("binary");
+	// var userUploadedFeedMessagesLocation = settings.upload_path;
+	//
+	// let ms = moment(new Date()).format("YYYYMMDDHHmmss").toString();
+	// var imageTypeRegularExpression      = /\/(.*?)$/;
+	// console.log(dataBuffer)
+	// var imageTypeDetected                = dataBuffer.type.match(imageTypeRegularExpression);
+	//
+	// var userUploadedImagePath            = userUploadedFeedMessagesLocation + "img" + ms + "." + imageTypeDetected[1];
+	var imgData = req.body.imgData;
+	var filePath = path.join(__dirname, "../../"+ settings.upload_path);
+	var ms = moment(new Date()).format("YYYYMMDDHHmmss").toString();
+	var fileName = "img" + ms;
+	base64Img.img(imgData, filePath, fileName, function(err, file) {
+		res.send(
+        			{
+        				state: "success",
+        				message: "上传成功!",
+        				info:
+                           {
+                           	path: "/"+settings.upload_path+fileName+"."+file.split(".")[1]
+                           }
+        			});
+	});
+	// var base64Data = imgData.replace(/^data:image\/\w+;base64,/, "");
+
+
+
+
+});
+
 router.post("/uploads", (req, res, next) => {
 
 	//    获取传入参数
 	let params = url.parse(req.url, true);
+	console.log(params);
 	let fileType = params.query.type;
 
 
@@ -101,9 +140,10 @@ router.post("/uploads", (req, res, next) => {
 	try{
 		form.parse(req)
 			.on("file", function (name, file) {
+				console.log(file);
 				let realFileType = service.getFileMimeType(file.path);
 				let typeKey = "others";
-				let thisType = file.name.split(".")[1];
+				let thisType = file.name.split(".")[file.name.split(".").length-1];
 				let ms = moment(new Date()).format("YYYYMMDDHHmmss").toString();
 				if (fileType == "images") {
 					typeKey = "img";
@@ -114,6 +154,7 @@ router.post("/uploads", (req, res, next) => {
 					if (realFileType.fileType == "jpg" || realFileType.fileType == "jpeg" || realFileType.fileType == "png" || realFileType.fileType == "gif") {
 						fs.rename(file.path, uploadPath + newFileName, function () {
 							var imageBuf = fs.readFileSync(path.join(__dirname, "../../"+uploadPath + newFileName));
+							console.log("/"+uploadPath + newFileName+'sdfsdfsdfds')
 							res.send(
 								{
 									state: "success",

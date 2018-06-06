@@ -16,7 +16,9 @@
     "lodash": "^4.17.10",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vux": "^2.9.1",
+    "vux-loader": "^1.2.8"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

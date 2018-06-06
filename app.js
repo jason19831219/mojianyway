@@ -19,8 +19,8 @@ var app = express();
 app.set("view engine", "ejs");
 
 app.use(logger("dev"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({limit: '5mb'}));
+app.use(bodyParser.urlencoded({limit: '5mb', extended: true }));
 app.use(cookieParser(settings.encrypt_key));
 let sessionConfig = {
 	name: settings.auth_cookie_name,
@@ -42,11 +42,8 @@ let sessionConfig = {
 app.use(session(sessionConfig));
 
 app.use("/public", express.static("./public"));
+app.use("/web-admin", express.static("./web-admin/dist"));
 app.use("/face-test", express.static("./face-test/dist"));
-// app.use("/face-test", function(req,res){
-//     res.send("哈哈");
-// });
-
 app.use(express.static("./web-www/dist"));
 app.use("/api", api);
 app.use("/manage", manage);
@@ -66,9 +63,10 @@ app.get("*", function(req, res) {
 // 	next();
 // });
 
-
-var privateKey  = fs.readFileSync("./utils/1528049153992.key");
-var certificate = fs.readFileSync("./utils/1528049153992.pem");
+var privateKey  = fs.readFileSync("./utils/1527853852909.key");
+var certificate = fs.readFileSync("./utils/1527853852909.pem");
+// var privateKey  = fs.readFileSync("./utils/1528049153992.key");
+// var certificate = fs.readFileSync("./utils/1528049153992.pem");
 var credentials = {key: privateKey, cert: certificate};
 
 var httpServer = http.createServer(app);
